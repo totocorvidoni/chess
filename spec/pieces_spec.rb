@@ -61,3 +61,43 @@ describe Rook do
     end    
   end
 end
+
+describe Bishop do
+  subject(:bishop) { Bishop.new('♗', [3, 2]) }
+
+  context 'when it moves diagonally down-left' do
+    it 'is valid' do
+      expect(bishop.valid_move?([1, 0])).to be true
+    end
+  end
+
+  context 'when it moves diagonally down-right' do
+    it 'is valid' do
+      expect(bishop.valid_move?([0, 5])).to be true
+    end    
+  end
+
+  context 'when it moves diagonally up-left' do
+    it 'is valid' do
+      expect(bishop.valid_move?([4, 1])).to be true
+    end    
+  end  
+
+  context 'when it moves diagonally up-left' do
+    it 'is valid' do
+      expect(bishop.valid_move?([7, 6])).to be true
+    end    
+  end  
+
+  context 'when it moves on a straight line' do
+    it 'is valid' do
+      expect(bishop.valid_move?([3, 7])).to be false
+    end    
+  end  
+
+  context 'when it moves diagonally out of board' do
+    it 'is valid' do
+      expect(bishop.valid_move?([6,-1])).to be false
+    end    
+  end    
+end
