@@ -1,27 +1,18 @@
-class Piece
+class ChessPiece
   attr_accessor :position
   attr_reader :player, :mark
 
-  WHITE = {king:   '♚',
-           queen:  '♛',
-           bishop: '♝',
-           knight: '♞',
-           rook:   '♜',
-           pawn:   '♟'}
+  def initialize(mark, position)
+    @mark = mark
+    @position = position
+  end
 
-  BLACK = {king:   '♔',
-           queen:  '♕',
-           bishop: '♗',
-           knight: '♘',
-           rook:   '♖',
-           pawn:   '♙'}
-
-  # OFF_BOUNDS -> maybe? to globally determine the range of the board
-  # def off_bounds?
-  #   move.each {all}
+  def in_board?(to)
+    to.all?(0..7)
+  end
 
   def move(start, stop) # -> legality should be checked on child classes
-    if valid_move?
+    if valid_move? 
       board.move_piece
     end
   end
@@ -37,41 +28,40 @@ class Piece
 
   private
 
-  def diagonal_move?(from, to)
-    return false if from[0] == to[0] || from[1] == to[1]
-    distance = (from[0] - to[0])
-    from[1] + distance == to[1] || from[1] - distance == to[1] ? true : false
+  def diagonal_move?(to)
+    return false if position[0] == to[0] && position[1] == to[1]
+    distance = position[0] - to[0]
+    position[1] + distance == to[1] || position[1] - distance == to[1] ? true : false
   end
 
-  def straight_move?(from, to)
-    return false if from == to
-    from[0] == to[0] || from[1] == to[1] ? true : false
+  def straight_move?(to)
+    return false if position == to
+    (position[0] == to[0] || position[1] == to[1]) ? true : false
   end
 
-  def diagonal_step?(from, to)
-    return false unless from[0] + 1 == to[0] || from[0] - 1 == to[0]
-    from[1] + 1 == to[1] || from[1] - 1 == to[1] ? true : false
+  def diagonal_step?(to)
+    return false unless position[0] + 1 == to[0] || position[0] - 1 == to[0]
+    position[1] + 1 == to[1] || position[1] - 1 == to[1] ? true : false
   end
 
-  def straight_step?(from, to)
-    return false if from == to
-    if from[0] == to[0]
-      return true if from[1] + 1 == to[1] || from[1] - 1 == to[1]
-    elsif from[1] == to[1]
-      return true if from[0] + 1 == to[0] || from[1] - 1 == to[1]
+  def straight_step?(to)
+    return false if position == to
+    if position[0] == to[0]
+      return true if position[1] + 1 == to[1] || position[1] - 1 == to[1]
+    elsif position[1] == to[1]
+      return true if position[0] + 1 == to[0] || position[1] - 1 == to[1]
     end
     false
   end
+end
 
-
-class King < Piece
-  def initialize(color, position)
-    @mark = color[:king]
-    @position = position
-  end
-
-  def valid_move?
-
+class King < ChessPiece
+  
+  def valid_move?(to)
+    if in_board?(to)
+     return true if diagonal_step?(to) || straight_step?(to)
+    end
+    false
   end
 
   def unobstructed?
@@ -94,14 +84,13 @@ class King < Piece
   end
 end
 
-class Rook < Piece
-  def initialize(color, position)
-    @mark = color[:rook]
-    @position = position
-  end
-
-  def valid_move?
-
+class Rook < ChessPiece
+  
+  def valid_move?(to)
+    if in_board?(to)
+      return true if straight_move?(to)
+    end
+    false
   end
 
   def unobstructed?
@@ -109,59 +98,45 @@ class Rook < Piece
   end
 
 
+end
+
+class Bishop < ChessPiece
+  
+  def valid_move?(to)
+    if in_board?(to)
+      return true if diagonal_move?(to)
+    end
+    false
+  end
+end
+
+class Queen < ChessPiece
+  
+  def valid_move?
   end
 
-  class Bishop < Piece
-    def initialize(color, position)
-      @mark = color[:bishop]
-      @position = position
-    end
+end
 
-    def valid_move?
-    end  
-
+class Knight < ChessPiece
+  
+  def valid_move?
   end
 
-  class Queen < Piece
-    def initialize(color, position)
-      @mark = color[:queen]
-      @position = position
-    end
-
-    def valid_move?
-    end
-
-  end
-
-  class Knight < Piece
-    def initialize(color, position)
-      @mark = color[:knight]
-      @position = position
-    end
-
-    def valid_move?
-    end
-
-    def unobstructed?
+  def unobstructed?
       # should overwrite the parent method only checking for landing position
-    end
+  end
+end
 
+class Pawn < ChessPiece
+  
+  def valid_move?
+    step
+    double step
+    capture
+    en passant
   end
 
-  class Pawn < Piece
-    def initialize(color, position)
-      @mark = color[:pawn]
-      @position = position
-    end
-
-    def valid_move?
-      step
-      double step
-      capture
-      en passant
-    end
-
-    def en_passant
-    end
-
+  def en_passant
   end
+
+end
