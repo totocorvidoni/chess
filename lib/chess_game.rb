@@ -4,19 +4,19 @@ require_relative 'player.rb'
 class ChessGame
   attr_reader :board
 
-  WHITE = { king: '♚',
-            queen: '♛',
-            bishop: '♝',
-            knight: '♞',
-            rook: '♜',
-            pawn: '♟' }
+  WHITE = {king:   '♚',
+           queen:  '♛',
+           bishop: '♝',
+           knight: '♞',
+           rook:   '♜',
+           pawn:   '♟'}
 
-  BLACK = { king: '♔',
-            queen: '♕',
-            bishop: '♗',
-            knight: '♘',
-            rook: '♖',
-            pawn: '♙' }
+  BLACK = {king:   '♔',
+           queen:  '♕',
+           bishop: '♗',
+           knight: '♘',
+           rook:   '♖',
+           pawn:   '♙'}
 
   EMPTY = '⛚'
 
@@ -24,13 +24,17 @@ class ChessGame
     setup
   end
 
-  def move_piece 
+  def move(piece, to)
+    # if @board[from[0]][from[1]].move(to)
+    # end
   end
 
   def capture_piece
   end
 
-  def add_piece
+  def add(piece, color, position)
+    mark = piece.to_s.downcase.to_sym
+    piece.new(color[mark], position)
   end
 
   def setup
