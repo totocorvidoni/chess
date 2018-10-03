@@ -1,23 +1,30 @@
 require 'pieces'
 
 describe King do
-  subject(:king) { King.new('♚', [4, 0]) }
+  subject(:king) { King.new('♚', [0, 4]) }
 
   context 'when it moves one step forward' do
     it 'is valid' do
-      expect(king.valid_move?([4, 1])).to be true
+      expect(king.valid_move?([1, 4])).to be true
     end
   end
 
   context 'when it moves one diagonal step' do
     it 'is valid' do
-      expect(king.valid_move?([3, 1])).to be true
+      expect(king.valid_move?([1, 3])).to be true
     end
+  end
+
+  context 'when it moves 2 steps to the side for castling' do
+    it 'is valid' do
+      expect(king.valid_move?([0, 2])).to be true
+      expect(king.valid_move?([0, 6])).to be true      
+    end    
   end
 
   context 'when it moves 2 steps forward' do
     it 'is not valid' do
-      expect(king.valid_move?([4, 2])).to be false
+      expect(king.valid_move?([2, 4])).to be false
     end
   end
 
@@ -29,7 +36,7 @@ describe King do
 
   context 'when it moves outside the board' do
     it 'is not valid' do
-      expect(king.valid_move?([4, -1])).to be false
+      expect(king.valid_move?([-1, 4])).to be false
     end
   end
 end

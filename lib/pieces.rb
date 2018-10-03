@@ -60,27 +60,17 @@ class King < ChessPiece
   def valid_move?(to)
     if in_board?(to)
      return true if diagonal_step?(to) || straight_step?(to)
+     return true if castling(to)
     end
     false
   end
 
-  def unobstructed?
-    # should overwrite the parent unobstructed taking in account the castling    
-  end
-
-  def castling
-
-    # if
-    #   "The king and the chosen rook are on the player's first rank.
-    #   Neither the king nor the chosen rook has previously moved.
-    #   There are no pieces between the king and the chosen rook.
-    #   The king is not currently in check.
-    #   The king does not pass through a square that is attacked by an enemy piece.
-    #   The king does not end up in check. (True of any legal move.)"
-    #   do the castling
-    #   end
-    # end  
-
+  def castling(to)
+    if position[0] == to[0]
+      true if position[1] - 2 == to[1] || position[1] + 2 == to[1]
+    else
+      false
+    end
   end
 end
 
@@ -131,12 +121,6 @@ class Rook < ChessPiece
     end
     false
   end
-
-  def unobstructed?
-    # should overwrite the parent unobstructed taking in account the castling    
-  end
-
-
 end
 
 class Pawn < ChessPiece
