@@ -34,6 +34,28 @@ describe King do
   end
 end
 
+describe Queen do
+  subject(:queen) { Queen.new('♕', [0, 3]) }
+
+  context 'when it moves forward' do
+    it 'is valid' do
+      expect(queen.valid_move?([5, 3])).to be true
+    end    
+  end
+
+  context 'when it moves left' do
+    it 'is valid' do
+      expect(queen.valid_move?([0, 7])).to be true
+    end
+  end
+
+  context 'when it moves out of board' do
+    it 'is not valid' do
+      expect(queen.valid_move?([0, 8])).to be false
+    end
+  end  
+end
+
 describe Rook do
   subject(:rook) { Rook.new('♜', [7, 0]) }
 

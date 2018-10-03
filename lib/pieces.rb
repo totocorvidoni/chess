@@ -112,9 +112,12 @@ end
 
 class Queen < ChessPiece
   
-  def valid_move?
+  def valid_move?(to)
+    if in_board?(to)
+      return true if diagonal_move?(to) || straight_move?(to)
+    end
+    false
   end
-
 end
 
 class Knight < ChessPiece
