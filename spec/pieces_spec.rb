@@ -1,7 +1,7 @@
 require 'pieces'
 
 describe King do
-  subject(:king) { King.new('♚', [0, 4]) }
+  subject(:king) { King.new('♚', 'Pupe', [0, 4]) }
 
   context 'when it moves one step forward' do
     it 'is valid' do
@@ -42,7 +42,7 @@ describe King do
 end
 
 describe Queen do
-  subject(:queen) { Queen.new('♕', [0, 3]) }
+  subject(:queen) { Queen.new('♕', 'Pupe', [0, 3]) }
 
   context 'when it moves forward' do
     it 'is valid' do
@@ -64,7 +64,7 @@ describe Queen do
 end
 
 describe Bishop do
-  subject(:bishop) { Bishop.new('♗', [3, 2]) }
+  subject(:bishop) { Bishop.new('♗', 'Pupe', [3, 2]) }
 
   context 'when it moves diagonally down-left' do
     it 'is valid' do
@@ -104,7 +104,7 @@ describe Bishop do
 end
 
 describe Knight do
-  subject(:knight) { Knight.new('♘', [2, 6]) }
+  subject(:knight) { Knight.new('♘', 'Pupe', [2, 6]) }
 
   context 'when it moves 2 step fowards and 1 left' do
     it 'is valid' do
@@ -144,7 +144,7 @@ describe Knight do
 end
 
 describe Rook do
-  subject(:rook) { Rook.new('♜', [7, 0]) }
+  subject(:rook) { Rook.new('♜', 'Pupe', [7, 0]) }
 
   context 'when it moves forward' do
     it 'is valid' do
@@ -173,7 +173,7 @@ end
 
 describe Pawn do
   context 'when is white ♟' do
-    subject(:pawn) { Pawn.new('♟', [1, 0]) }
+    subject(:pawn) { Pawn.new('♟', 'Pupe', [1, 0]) }
 
     context 'moving one step up' do
       it 'is valid' do
@@ -213,7 +213,7 @@ describe Pawn do
   end
 
   context 'when is black ♙' do
-    subject(:pawn) { Pawn.new('♙', [6, 7]) }
+    subject(:pawn) { Pawn.new('♙', 'Pupe', [6, 7]) }
 
     context 'moving one step down' do
       it 'is valid' do
