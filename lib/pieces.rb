@@ -2,30 +2,16 @@ class ChessPiece
   attr_accessor :position
   attr_reader :player, :mark
 
-  def initialize(mark, position)
+  def initialize(mark, player, position)
     @mark = mark
     @position = position
+    @player = player
   end
 
   def in_board?(to)
     to.all?(0..7)
   end
-
-  def move(start, stop) # -> legality should be checked on child classes
-    if valid_move? 
-      board.move_piece
-    end
-  end
-
-  def check_prevent
-    # check before moving if the king will not end up in check
-    # maybe with an each loop on all the enemy pieces on the kings position
-  end
-
-  def unobstructed?
-    # will return true if there are no pieces between the start and stop 
-  end
-
+  
   private
 
   def diagonal_move?(to)
