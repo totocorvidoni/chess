@@ -56,34 +56,6 @@ describe Queen do
   end  
 end
 
-describe Rook do
-  subject(:rook) { Rook.new('♜', [7, 0]) }
-
-  context 'when it moves forward' do
-    it 'is valid' do
-      expect(rook.valid_move?([7, 7])).to be true
-    end    
-  end  
-
-  context 'when it moves left' do
-    it 'is valid' do
-      expect(rook.valid_move?([0, 0])).to be true
-    end
-  end
-
-  context 'when it moves diagonally' do
-    it 'is not valid' do
-      expect(rook.valid_move?([5, 2])).to be false
-    end
-  end
-
-  context 'when it moves out of the board' do
-    it 'is not valid' do
-      expect(rook.valid_move?([8, 7])).to be false      
-    end    
-  end
-end
-
 describe Bishop do
   subject(:bishop) { Bishop.new('♗', [3, 2]) }
 
@@ -123,3 +95,72 @@ describe Bishop do
     end    
   end    
 end
+
+describe Knight do
+  subject(:knight) { Knight.new('♘', [2, 6]) }
+
+  context 'when it moves 2 step fowards and 1 left' do
+    it 'is valid' do
+      expect(knight.valid_move?([4, 5])).to be true
+    end
+  end
+
+  context 'when it moves 1 step foward and 2 steps left' do
+    it 'is valid' do
+      expect(knight.valid_move?([3, 4])).to be true
+    end
+  end
+
+  context 'when it moves 2 steps back and one step left' do
+    it 'is valid' do
+      expect(knight.valid_move?([0, 5])).to be true
+    end    
+  end
+
+  context 'when it moves out of board' do
+    it 'is not valid' do
+      expect(knight.valid_move?([3, 8])).to be false
+    end
+  end
+
+  context 'when it moves horizontally' do
+    it 'is not valid' do
+      expect(knight.valid_move?([4, 6])).to be false
+    end
+  end
+
+  context 'when it moves diagonally' do
+    it 'is not valid' do
+      expect(knight.valid_move?([4, 4])).to be false
+    end
+  end  
+end
+
+describe Rook do
+  subject(:rook) { Rook.new('♜', [7, 0]) }
+
+  context 'when it moves forward' do
+    it 'is valid' do
+      expect(rook.valid_move?([7, 7])).to be true
+    end    
+  end  
+
+  context 'when it moves left' do
+    it 'is valid' do
+      expect(rook.valid_move?([0, 0])).to be true
+    end
+  end
+
+  context 'when it moves diagonally' do
+    it 'is not valid' do
+      expect(rook.valid_move?([5, 2])).to be false
+    end
+  end
+
+  context 'when it moves out of the board' do
+    it 'is not valid' do
+      expect(rook.valid_move?([8, 7])).to be false      
+    end    
+  end
+end
+

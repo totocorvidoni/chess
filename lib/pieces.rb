@@ -36,7 +36,7 @@ class ChessPiece
 
   def straight_move?(to)
     return false if position == to
-    (position[0] == to[0] || position[1] == to[1]) ? true : false
+    position[0] == to[0] || position[1] == to[1] ? true : false
   end
 
   def diagonal_step?(to)
@@ -84,6 +84,45 @@ class King < ChessPiece
   end
 end
 
+class Queen < ChessPiece
+  
+  def valid_move?(to)
+    if in_board?(to)
+      return true if diagonal_move?(to) || straight_move?(to)
+    end
+    false
+  end
+end
+
+class Bishop < ChessPiece
+  
+  def valid_move?(to)
+    if in_board?(to)
+      return true if diagonal_move?(to)
+    end
+    false
+  end
+end
+
+class Knight < ChessPiece
+
+  MOVES = [[2, 1], [-2, 1], [2, -1],
+          [-2, -1], [1, 2], [-1, 2],
+          [1, -2], [-1, -2]]
+  
+  def valid_move?(to)
+    if in_board?(to)
+      travel = [(position[0] - to[0]), (position[1] - to[1])]
+      return true if MOVES.any?(travel)
+    end
+    false
+  end
+
+  def unobstructed?
+      # should overwrite the parent method only checking for landing position
+  end
+end
+
 class Rook < ChessPiece
   
   def valid_move?(to)
@@ -98,36 +137,6 @@ class Rook < ChessPiece
   end
 
 
-end
-
-class Bishop < ChessPiece
-  
-  def valid_move?(to)
-    if in_board?(to)
-      return true if diagonal_move?(to)
-    end
-    false
-  end
-end
-
-class Queen < ChessPiece
-  
-  def valid_move?(to)
-    if in_board?(to)
-      return true if diagonal_move?(to) || straight_move?(to)
-    end
-    false
-  end
-end
-
-class Knight < ChessPiece
-  
-  def valid_move?
-  end
-
-  def unobstructed?
-      # should overwrite the parent method only checking for landing position
-  end
 end
 
 class Pawn < ChessPiece
