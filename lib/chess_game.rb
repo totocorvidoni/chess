@@ -117,6 +117,7 @@ class ChessGame
   end
 
   def show
+    puts
     @board.each do |rank|
       print '|'
       rank.each do |square|
@@ -128,5 +129,9 @@ class ChessGame
       end
       puts
     end
+  end
+
+  def my_status
+    @current_player.piece_status
   end
 end
