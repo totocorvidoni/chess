@@ -164,3 +164,84 @@ describe Rook do
   end
 end
 
+describe Pawn do
+  context 'when is white ♟' do
+    subject(:pawn) { Pawn.new('♟', [1, 0]) }
+
+    context 'moving one step up' do
+      it 'is valid' do
+        expect(pawn.valid_move?([2, 0])).to be true
+      end
+    end
+    
+    context 'doing a double step' do
+      it 'is valid' do
+        expect(pawn.valid_move?([3, 0])).to be true
+      end
+    end
+
+    context 'moving diagonally up-right' do
+      it 'is valid' do
+        expect(pawn.valid_move?([2, 1])).to be true
+      end      
+    end
+
+    context 'moving out of board' do
+      it 'is not valid' do
+        expect(pawn.valid_move?([1, -1])).to be false
+      end      
+    end
+
+    context 'moving backwards' do
+      it 'is not valid' do
+        expect(pawn.valid_move?([0, 0])).to be false
+      end      
+    end
+
+    context 'moving horizontally' do
+      it 'is not valid' do
+        expect(pawn.valid_move?([1, 1])).to be false
+      end      
+    end
+  end
+
+  context 'when is black ♙' do
+    subject(:pawn) { Pawn.new('♙', [6, 7]) }
+
+    context 'moving one step down' do
+      it 'is valid' do
+        expect(pawn.valid_move?([5, 7])).to be true
+      end
+    end
+    
+    context 'doing a double step' do
+      it 'is valid' do
+        expect(pawn.valid_move?([4, 7])).to be true
+      end
+    end
+
+    context 'moving diagonally down-left' do
+      it 'is valid' do
+        expect(pawn.valid_move?([5, 6])).to be true
+      end      
+    end
+
+    context 'moving out of board' do
+      it 'is not valid' do
+        expect(pawn.valid_move?([5, 8])).to be false
+      end      
+    end
+
+    context 'moving backwards' do
+      it 'is not valid' do
+        expect(pawn.valid_move?([7, 7])).to be false
+      end      
+    end
+
+    context 'moving horizontally' do
+      it 'is not valid' do
+        expect(pawn.valid_move?([6, 6])).to be false
+      end      
+    end
+  end
+end

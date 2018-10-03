@@ -141,14 +141,35 @@ end
 
 class Pawn < ChessPiece
   
-  def valid_move?
-    step
-    double step
-    capture
-    en passant
+  def valid_move?(to)
+    if in_board?(to)
+      case @mark
+      when '♟'
+        return true if white_advance?(to)
+      when '♙'
+        return true if black_advance?(to)
+      end
+    end
+    false
   end
 
-  def en_passant
+  def white_advance?(to)    
+    if position[0] + 1 == to[0] && (-1..1) === position[1] - to[1]
+      true
+    elsif position[0] + 2 == to[0] && position[1] == to[1]
+      true
+    else
+      false
+    end
   end
 
+  def black_advance?(to)
+    if position[0] - 1 == to[0] && (-1..1) === position[1] - to[1]
+      true
+    elsif position[0] - 2 == to[0] && position[1] == to[1]
+      true
+    else
+      false
+    end  
+  end  
 end
