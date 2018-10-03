@@ -2,7 +2,7 @@ require_relative 'pieces.rb'
 require_relative 'player.rb'
 
 class ChessGame
-  attr_reader :board
+  attr_reader :board, :white_player, :black_player
 
   WHITE = {king:   '♚',
            queen:  '♛',
@@ -24,38 +24,71 @@ class ChessGame
                King, Bishop, Knight, Rook]
 
   def initialize(white_name, black_name)
-    setup
     @white_player = Player.new(white_name, 'white')
     @black_player = Player.new(black_name, 'black')
+    setup
+    @current_player = @white_player
   end
 
-  def move(from, to)
-    # if @board[from[0]][from[1]].move(to)
-    # end
+  def legal?(from, to)
+    piece = @board[from[0]][from[1]]
+    piece.valid_move(from, to)
+    @current_player.pieces.any(piece)
+    castling
+    en_passant
+    path_clear?
+    check_prevent
   end
 
-  def capture_piece
-  end
-
-  def move(start, stop) # -> legality should be checked on child classes
-    if valid_move? 
-      board.move_piece
+  def path_clear?(from, to)
+    case @board[from[0]][from[1]]
+    when Pawn
+      pawn_clear?(to)
+    when Rook
+      rook_clear?(from, to)
+    when Knight
+      knight_clear?(from, to)
+    when Bishop
+      bishop_clear?(from, to)
+    when Queen
+      queen_clear?(from, to)
+    when King
+      king_clear?(from, to)
     end
   end
 
-  def check_prevent
-    # check before moving if the king will not end up in check
-    # maybe with an each loop on all the enemy pieces on the kings position
+  def pawn_clear?(to)
+    if @board[to[0]][to[1]] == EMPTY
+      true
+    else
+      false
+    end
   end
 
-  def unobstructed?
-    # will return true if there are no pieces between the start and stop 
+  def rook_clear?(from, to)
+
+    
   end
+
+
+  def move(from, to)
+    @board[to[0]][to[1]] = @board[from[0]][from[1]]
+    @board[from[0]][from[1]] = EMPTY
+  end
+
+  # def capture_piece
+  # end
 
 
   def add(piece, color, position)
     mark = piece.to_s.downcase.to_sym
-    @board[position[0]][position[1]] = piece.new(color[mark], position)
+    if color == WHITE
+      @board[position[0]][position[1]] = piece.new(color[mark], @white_player, position)
+      @white_player.pieces << @board[position[0]][position[1]]
+    elsif color == BLACK
+      @board[position[0]][position[1]] = piece.new(color[mark], @black_player, position)
+      @black_player.pieces << @board[position[0]][position[1]]
+    end
   end
 
   def setup
@@ -95,9 +128,5 @@ class ChessGame
       end
       puts
     end
-  end
-
-  def new_player(name, color)
-    Player.new(name, color)
   end
 end
