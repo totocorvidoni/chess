@@ -14,19 +14,18 @@ describe ChessGame do
     end
   end  
 
+  describe '#add creates chess pieces' do
+    context 'when creating a pawn' do
+      it 'belongs to the class Pawn' do
+      expect(subject.add(Pawn, 'white', [1, 0])).to be_instance_of Pawn
+      end
+    end
+  end
+
   describe '#show displays the state of @board' do
     context 'at the start of the game' do
       it 'displays the setted up board' do
-        expect { subject.show }.to output(puts(<<~BOARD)).to_stdout
-          |♜|♞|♝|♛|♚|♝|♞|♜|
-          |♟|♟|♟|♟|♟|♟|♟|♟|
-          |⛚|⛚|⛚|⛚|⛚|⛚|⛚|⛚|
-          |⛚|⛚|⛚|⛚|⛚|⛚|⛚|⛚|
-          |⛚|⛚|⛚|⛚|⛚|⛚|⛚|⛚|
-          |⛚|⛚|⛚|⛚|⛚|⛚|⛚|⛚|
-          |♙|♙|♙|♙|♙|♙|♙|♙|
-          |♖|♘|♗|♕|♔|♗|♘|♖|
-        BOARD
+        expect { subject.show }.to output(puts).to_stdout
       end
     end      
   end
