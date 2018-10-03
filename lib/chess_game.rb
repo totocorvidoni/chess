@@ -23,11 +23,13 @@ class ChessGame
   HOME_RANK = [Rook, Knight, Bishop, Queen,
                King, Bishop, Knight, Rook]
 
-  def initialize
+  def initialize(white_name, black_name)
     setup
+    @white_player = Player.new(white_name, 'white')
+    @black_player = Player.new(black_name, 'black')
   end
 
-  def move(piece, to)
+  def move(from, to)
     # if @board[from[0]][from[1]].move(to)
     # end
   end
@@ -35,19 +37,26 @@ class ChessGame
   def capture_piece
   end
 
+  def move(start, stop) # -> legality should be checked on child classes
+    if valid_move? 
+      board.move_piece
+    end
+  end
+
+  def check_prevent
+    # check before moving if the king will not end up in check
+    # maybe with an each loop on all the enemy pieces on the kings position
+  end
+
+  def unobstructed?
+    # will return true if there are no pieces between the start and stop 
+  end
+
+
   def add(piece, color, position)
     mark = piece.to_s.downcase.to_sym
     @board[position[0]][position[1]] = piece.new(color[mark], position)
   end
-
-  # def setup
-  #   @board = []
-  #   @board[0] = [BLACK[:rook], BLACK[:knight], BLACK[:bishop], BLACK[:queen], BLACK[:king], BLACK[:bishop], BLACK[:knight], BLACK[:rook]]
-  #   @board[1] = Array.new(8) { BLACK[:pawn] }
-  #   @board.fill(2..5) { Array.new(8) { EMPTY } }
-  #   @board[6] = Array.new(8) { WHITE[:pawn] }
-  #   @board[7] = [WHITE[:rook], WHITE[:knight], WHITE[:bishop], WHITE[:queen], WHITE[:king], WHITE[:bishop], WHITE[:knight], WHITE[:rook]]
-  # end
 
   def setup
     @board = Array.new(8) { Array.new }
