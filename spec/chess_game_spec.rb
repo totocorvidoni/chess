@@ -5,9 +5,9 @@ describe ChessGame do
   it { is_expected.to respond_to(:setup) }
   
   describe '@board to represent the board' do
-    it 'consist in an array of 8 nested arrays' do
-      expect(chess.board).to be_kind_of(Array)
-      expect(chess.board.map { |x| x.size }.all?(8)).to be true
+    it 'consist in an hash using coordinates as keys' do
+      expect(chess.board).to be_kind_of(Hash)
+      expect(chess.board.size).to eq(64)
     end
   end  
 
@@ -28,11 +28,11 @@ describe ChessGame do
     end
   end
 
-  describe '#unobstructed? check if the path planned is free' do
-    context 'when a pawn moves one square ahead' do
-      it 'is valid' do
-        expect(chess.path_clear?([1, 0], [2, 0])).to be true
-      end
-    end
-  end
+  # describe '#unobstructed? check if the path planned is free' do
+  #   context 'when a pawn moves one square ahead' do
+  #     it 'is valid' do
+  #       expect(chess.path_clear?([1, 0], [2, 0])).to be true
+  #     end
+  #   end
+  # end
 end
