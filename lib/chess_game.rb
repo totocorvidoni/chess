@@ -25,8 +25,8 @@ class ChessGame
                King, Bishop, Knight, Rook]
 
   def initialize(white_name, black_name)
-    @white_player = Player.new(white_name, 'white')
-    @black_player = Player.new(black_name, 'black')
+    @white_player = Player.new(white_name)
+    @black_player = Player.new(black_name)
     setup
     @current_player = @white_player
   end
@@ -41,64 +41,71 @@ class ChessGame
   #   check_prevent
   # end
 
-  # def path_clear?(from, to)
-  #   case @board[from[0]][from[1]]
-  #   when Pawn
-  #     pawn_clear?(to)
-  #   when Rook
-  #     rook_clear?(from, to)
-  #   when Knight
-  #     knight_clear?(from, to)
-  #   when Bishop
-  #     bishop_clear?(from, to)
-  #   when Queen
-  #     queen_clear?(from, to)
-  #   when King
-  #     king_clear?(from, to)
-  #   end
-  # end
-
-  # def pawn_clear?(to)
-  #   if @board[to[0]][to[1]] == EMPTY
-  #     true
-  #   else
-  #     false
-  #   end
-  # end
-
-  # def rook_clear?(from, to)
-  #   if from[0] == to[0]
-  #     distance = from[1] - to[1]
-  #     if distance == 1 || distance == -1
-  #       true
-  #     else
-  #       @board[from[0]][from[1.next]...distance].each do |path|
-  #         return false unless path == EMPTY || path.instace_of?(Rook)
-  #       end
-  #   elsif from[1] == to[1]
-      
-  #   end
-
-    
-  # end
-
-
-  def move(from, to)
-    @board[to[0]][to[1]] = @board[from[0]][from[1]]
-    @board[from[0]][from[1]] = EMPTY
+  def path_clear?(from, to)
+    case @board[from].content
+    when Pawn
+      pawn_clear?(to)
+    when Rook
+      rook_clear?(from, to)
+    when Knight
+      knight_clear?(from, to)
+    when Bishop
+      bishop_clear?(from, to)
+    when Queen
+      queen_clear?(from, to)
+    when King
+      king_clear?(from, to)
+    end
   end
 
-  # def capture_piece
-  # end
+  def pawn_clear?(to)
+    if @board[to].content == EMPTY
+      true
+    else
+      false
+    end
+  end
+
+  def rook_clear?(from, to)
+    if from[0] == to[0]
+      distance = from[1] - to[1]
+      if distance < 0
+
+        true
+      else
+        @board[from[0]][from[1.next]...distance].each do |path|
+          return false unless path == EMPTY || path.instace_of?(Rook)
+        end
+      end
+    end
+  end
+
+  def check_adjacent(from, direction, steps=0)
+    return steps if from.adjacent[direction] == nil
+    steps += 1
+    return steps unless @board[from.adjacent[direction]].content == EMPTY 
+    check_adjacent(@board[from.adjacent[direction]], direction, steps)
+  end
+    
+  def move(from, to)
+    @board[from].content = @board[to].content
+    @board[from].content = EMPTY
+    @board[to].content.site = to
+  end
+
+  def capture(piece)
+    @white_player.pieces.delete(piece)
+    @black_player.pieces.delete(piece)
+  end
 
 
   def add(piece, color, square)
     mark = piece.to_s.downcase.to_sym
     if color == WHITE
-      @board[square].content = piece.new(color[mark], @white_player, square)
+      @board[square].content = piece.new(color[mark], square)
       @white_player.pieces << @board[square].content
     elsif color == BLACK
-      @board[square].content = piece.new(color[mark], @black_player, square)
+      @board[square].content = piece.new(color[mark], square)
       @black_player.pieces << @board[square].content
     end
   end

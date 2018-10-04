@@ -1,11 +1,10 @@
 class ChessPiece
   attr_accessor :site
-  attr_reader :player, :mark
+  attr_reader :mark
 
-  def initialize(mark, player, site)
+  def initialize(mark, site)
     @mark = mark
     @site = site
-    @player = player
   end
 
   def in_board?(to)

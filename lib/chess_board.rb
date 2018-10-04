@@ -15,7 +15,7 @@ class ChessBoard
 end
 
 class Square
-  attr_reader :site, :adjecent
+  attr_reader :site, :adjacent
   attr_accessor :content
 
   def initialize(content, site)
@@ -35,7 +35,7 @@ class Square
   def clean_up
     @adjacent.each do |key, value|
       unless value.all?(0..7)
-        @adjacent[key] = 'OFF BOARD'
+        @adjacent.delete(key)
       end
     end
   end

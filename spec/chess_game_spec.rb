@@ -28,6 +28,32 @@ describe ChessGame do
     end
   end
 
+  describe '#check_adjacent will return the distance to another piece in the given direction' do
+    context 'from pawn to pawn' do
+      it 'is 5' do
+        expect(chess.check_adjacent(chess.board[[1, 1]], :up)).to eq(5)
+      end
+    end
+
+    context 'from [4, 4] to white pawn' do
+      it 'is 3' do
+        expect(chess.check_adjacent(chess.board[[4, 4]], :down)).to eq(3)
+      end      
+    end
+
+    context 'diagonally from pawn to pawn' do
+      it 'is 5' do
+        expect(chess.check_adjacent(chess.board[[1, 0]], :up_right)).to eq(5)
+      end
+    end
+
+    context 'from [5, 0] to end of board' do
+      it 'is 7' do
+        expect(chess.check_adjacent(chess.board[[5, 0]], :right)).to eq(7)
+      end
+    end
+  end
+
   # describe '#unobstructed? check if the path planned is free' do
   #   context 'when a pawn moves one square ahead' do
   #     it 'is valid' do
