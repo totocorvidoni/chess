@@ -1,10 +1,10 @@
 class ChessPiece
-  attr_accessor :position
+  attr_accessor :site
   attr_reader :player, :mark
 
-  def initialize(mark, player, position)
+  def initialize(mark, player, site)
     @mark = mark
-    @position = position
+    @site = site
     @player = player
   end
 
@@ -15,27 +15,27 @@ class ChessPiece
   private
 
   def diagonal_move?(to)
-    return false if position[0] == to[0] && position[1] == to[1]
-    distance = position[0] - to[0]
-    position[1] + distance == to[1] || position[1] - distance == to[1] ? true : false
+    return false if site[0] == to[0] && site[1] == to[1]
+    distance = site[0] - to[0]
+    site[1] + distance == to[1] || site[1] - distance == to[1] ? true : false
   end
 
   def straight_move?(to)
-    return false if position == to
-    position[0] == to[0] || position[1] == to[1] ? true : false
+    return false if site == to
+    site[0] == to[0] || site[1] == to[1] ? true : false
   end
 
   def diagonal_step?(to)
-    return false unless position[0] + 1 == to[0] || position[0] - 1 == to[0]
-    position[1] + 1 == to[1] || position[1] - 1 == to[1] ? true : false
+    return false unless site[0] + 1 == to[0] || site[0] - 1 == to[0]
+    site[1] + 1 == to[1] || site[1] - 1 == to[1] ? true : false
   end
 
   def straight_step?(to)
-    return false if position == to
-    if position[0] == to[0]
-      return true if position[1] + 1 == to[1] || position[1] - 1 == to[1]
-    elsif position[1] == to[1]
-      return true if position[0] + 1 == to[0] || position[1] - 1 == to[1]
+    return false if site == to
+    if site[0] == to[0]
+      return true if site[1] + 1 == to[1] || site[1] - 1 == to[1]
+    elsif site[1] == to[1]
+      return true if site[0] + 1 == to[0] || site[1] - 1 == to[1]
     end
     false
   end
@@ -52,8 +52,8 @@ class King < ChessPiece
   end
 
   def castling(to)
-    if position[0] == to[0]
-      true if position[1] - 2 == to[1] || position[1] + 2 == to[1]
+    if site[0] == to[0]
+      true if site[1] - 2 == to[1] || site[1] + 2 == to[1]
     else
       false
     end
@@ -88,14 +88,14 @@ class Knight < ChessPiece
   
   def valid_move?(to)
     if in_board?(to)
-      travel = [(position[0] - to[0]), (position[1] - to[1])]
+      travel = [(site[0] - to[0]), (site[1] - to[1])]
       return true if MOVES.any?(travel)
     end
     false
   end
 
   def unobstructed?
-      # should overwrite the parent method only checking for landing position
+      # should overwrite the parent method only checking for landing site
   end
 end
 
@@ -124,9 +124,9 @@ class Pawn < ChessPiece
   end
 
   def white_advance?(to)    
-    if position[0] + 1 == to[0] && (-1..1) === position[1] - to[1]
+    if site[0] + 1 == to[0] && (-1..1) === site[1] - to[1]
       true
-    elsif position[0] + 2 == to[0] && position[1] == to[1]
+    elsif site[0] + 2 == to[0] && site[1] == to[1]
       true
     else
       false
@@ -134,9 +134,9 @@ class Pawn < ChessPiece
   end
 
   def black_advance?(to)
-    if position[0] - 1 == to[0] && (-1..1) === position[1] - to[1]
+    if site[0] - 1 == to[0] && (-1..1) === site[1] - to[1]
       true
-    elsif position[0] - 2 == to[0] && position[1] == to[1]
+    elsif site[0] - 2 == to[0] && site[1] == to[1]
       true
     else
       false

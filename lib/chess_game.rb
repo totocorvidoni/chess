@@ -65,10 +65,21 @@ class ChessGame
     end
   end
 
-  def rook_clear?(from, to)
+  # def rook_clear?(from, to)
+  #   if from[0] == to[0]
+  #     distance = from[1] - to[1]
+  #     if distance == 1 || distance == -1
+  #       true
+  #     else
+  #       @board[from[0]][from[1.next]...distance].each do |path|
+  #         return false unless path == EMPTY || path.instace_of?(Rook)
+  #       end
+  #   elsif from[1] == to[1]
+      
+  #   end
 
     
-  end
+  # end
 
 
   def move(from, to)
@@ -80,14 +91,14 @@ class ChessGame
   # end
 
 
-  def add(piece, color, position)
+  def add(piece, color, site)
     mark = piece.to_s.downcase.to_sym
     if color == WHITE
-      @board[position[0]][position[1]] = piece.new(color[mark], @white_player, position)
-      @white_player.pieces << @board[position[0]][position[1]]
+      @board[site[0]][site[1]] = piece.new(color[mark], @white_player, site)
+      @white_player.pieces << @board[site[0]][site[1]]
     elsif color == BLACK
-      @board[position[0]][position[1]] = piece.new(color[mark], @black_player, position)
-      @black_player.pieces << @board[position[0]][position[1]]
+      @board[site[0]][site[1]] = piece.new(color[mark], @black_player, site)
+      @black_player.pieces << @board[site[0]][site[1]]
     end
   end
 
