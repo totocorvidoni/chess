@@ -52,6 +52,37 @@ describe ChessGame do
         expect(chess.check_adjacent(chess.board[[5, 0]], :right)).to eq(7)
       end
     end
+
+    context 'from [0, 1] to [1, 1]' do
+      it 'is 1' do
+        expect(chess.check_adjacent(chess.board[[0, 1]], :up)).to eq(1)
+      end
+    end
+  end
+
+  describe '#rook_clear will return true if there are no obtacles between the rook and destination' do
+    context 'Rook at [2, 6]' do
+      context 'going [6, 6]' do
+        it 'rook is clear' do
+          allow(chess).to receive(:check_adjacent).with([2, 6], :up).and_return(4)
+          expect(chess.rook_clear?([2, 6], [6, 6])).to be true
+        end
+      end
+
+      context 'going [2, 0]' do
+        it 'rook is clear' do
+          allow(chess).to receive(:check_adjacent).with([2, 6], :left).and_return(6)
+          expect(chess.rook_clear?([2, 6], [2, 0])).to be true
+        end
+      end
+
+      context 'going [6, 7]' do
+        it 'rook is not clear' do
+          allow(chess).to receive(:check_adjacent).with([2, 6], :up).and_return(4)
+          expect(chess.rook_clear?([2, 6], [6, 7])).to be false
+        end
+      end
+    end
   end
 
   # describe '#unobstructed? check if the path planned is free' do

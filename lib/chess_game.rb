@@ -68,19 +68,25 @@ class ChessGame
 
   def rook_clear?(from, to)
     if from[0] == to[0]
-      distance = from[1] - to[1]
+      distance = to[1] - from[1]
       if distance < 0
-
-        true
-      else
-        @board[from[0]][from[1.next]...distance].each do |path|
-          return false unless path == EMPTY || path.instace_of?(Rook)
-        end
+        true if distance.abs == check_adjacent(from, :left)
+      elsif distance > 0
+        true if distance.abs == check_adjacent(from, :right)
       end
+    elsif from[1] == to[1]
+      distance = to[0] - from[0]
+      if distance < 0
+        true if distance.abs == check_adjacent(from, :down)
+      elsif distance > 0
+        true if distance.abs == check_adjacent(from, :up)
+      end  
+    else
+      false
     end
   end
 
-  def check_adjacent(from, direction, steps=0)
+  def check_adjacent(from, direction, steps= 0)
     return steps if from.adjacent[direction] == nil
     steps += 1
     return steps unless @board[from.adjacent[direction]].content == EMPTY 
