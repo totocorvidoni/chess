@@ -46,13 +46,13 @@ class ChessGame
     when Pawn
       pawn_clear?(to)
     when Rook
-      rook_clear?(from, to)
+      straight_clear?(from, to)
     when Knight
       knight_clear?(from, to)
     when Bishop
-      bishop_clear?(from, to)
-    when Queen
-      queen_clear?(from, to)
+      diagonal_clear(from, to)
+    when Queen, King
+      diagonal_clear?(from, to)
     when King
       king_clear?(from, to)
     end
@@ -66,24 +66,41 @@ class ChessGame
     end
   end
 
-  def rook_clear?(from, to)
+  def straight_clear?(from, to)
     if from[0] == to[0]
       distance = to[1] - from[1]
-      if distance < 0
-        true if distance.abs == check_adjacent(from, :left)
+      if distance < 0 
+        return  true if distance.abs == check_adjacent(from, :left)
       elsif distance > 0
-        true if distance.abs == check_adjacent(from, :right)
+        return  true if distance.abs == check_adjacent(from, :right)
       end
     elsif from[1] == to[1]
       distance = to[0] - from[0]
       if distance < 0
-        true if distance.abs == check_adjacent(from, :down)
+        return  true if distance.abs == check_adjacent(from, :down)
       elsif distance > 0
-        true if distance.abs == check_adjacent(from, :up)
+        return  true if distance.abs == check_adjacent(from, :up)
       end  
-    else
-      false
     end
+    false
+  end
+
+  def diagonal_clear?(from, to)
+    distance = to[1] - from[1]
+    if from[0] < to[0]
+      if from[1] < to[1]
+        return true if distance.abs == check_adjacent(from, :up_right)
+      elsif from[1] > to[1]
+        return true if distance.abs == check_adjacent(from, :up_left)
+      end
+    elsif from[0] > to[0]
+      if from[1] < to[1]
+        return true if distance.abs == check_adjacent(from, :down_right)
+      elsif from[1] > to[1]
+        return true if distance.abs == check_adjacent(from, :down_left)
+      end
+    end
+    false
   end
 
   def check_adjacent(from, direction, steps= 0)
@@ -92,7 +109,7 @@ class ChessGame
     return steps unless @board[from.adjacent[direction]].content == EMPTY 
     check_adjacent(@board[from.adjacent[direction]], direction, steps)
   end
-    
+  
   def move(from, to)
     @board[from].content = @board[to].content
     @board[from].content = EMPTY

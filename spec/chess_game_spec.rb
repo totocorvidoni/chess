@@ -60,36 +60,60 @@ describe ChessGame do
     end
   end
 
-  describe '#rook_clear will return true if there are no obtacles between the rook and destination' do
+  describe '#straight_clear will return true if there are no obtacles between origin and destination' do
     context 'Rook at [2, 6]' do
       context 'going [6, 6]' do
-        it 'rook is clear' do
+        it 'is clear' do
           allow(chess).to receive(:check_adjacent).with([2, 6], :up).and_return(4)
-          expect(chess.rook_clear?([2, 6], [6, 6])).to be true
+          expect(chess.straight_clear?([2, 6], [6, 6])).to be true
         end
       end
 
       context 'going [2, 0]' do
-        it 'rook is clear' do
+        it 'is clear' do
           allow(chess).to receive(:check_adjacent).with([2, 6], :left).and_return(6)
-          expect(chess.rook_clear?([2, 6], [2, 0])).to be true
+          expect(chess.straight_clear?([2, 6], [2, 0])).to be true
         end
       end
 
       context 'going [6, 7]' do
-        it 'rook is not clear' do
+        it 'is not clear' do
           allow(chess).to receive(:check_adjacent).with([2, 6], :up).and_return(4)
-          expect(chess.rook_clear?([2, 6], [6, 7])).to be false
+          expect(chess.straight_clear?([2, 6], [6, 7])).to be false
         end
       end
     end
   end
 
-  # describe '#unobstructed? check if the path planned is free' do
-  #   context 'when a pawn moves one square ahead' do
-  #     it 'is valid' do
-  #       expect(chess.path_clear?([1, 0], [2, 0])).to be true
-  #     end
-  #   end
-  # end
+  describe '#diagonal_clear? will return true if there are no obtacles between origin and destination' do
+    context 'bishop is at [3, 4]' do
+      context 'it moves [6, 7]' do
+        it 'is clear' do
+          allow(chess).to receive(:check_adjacent).with([3, 4], :up_right).and_return(3)
+          expect(chess.diagonal_clear?([3, 4], [6, 7])).to be true          
+        end
+      end
+
+      context 'it moves [7, 0]' do
+        it 'is not clear' do
+          allow(chess).to receive(:check_adjacent).with([3, 4], :up_left).and_return(3)
+          expect(chess.diagonal_clear?([3, 4], [7, 0])).to be false
+        end
+      end
+
+      context 'it moves [1, 2]' do
+        it 'is clear' do
+          allow(chess).to receive(:check_adjacent).with([3, 4], :down_left).and_return(2)
+          expect(chess.diagonal_clear?([3, 4], [1, 2])).to be true
+        end
+      end
+
+      context 'it moves [1, 6]' do
+        it 'is not clear' do
+          allow(chess).to receive(:check_adjacent).with([3, 4], :down_right).and_return(2)
+          expect(chess.diagonal_clear?([3, 4], [0, 7])).to be false
+        end
+      end
+    end    
+  end
 end
