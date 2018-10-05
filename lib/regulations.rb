@@ -4,16 +4,17 @@ module Regulations
   def legal?(square, to)
     piece = @board[square].content
     from = piece.site
-    piece.valid_move?(from, to)
+    return false unless piece.valid_move?(from, to)
     @current_player.pieces.any(piece)
     if piece.special_move == true
       return true if resolve_special_cases(square, to)
     else
       return true if path_clear?
     end
+    false
   end
 
-  def check_prevent(king)
+  def in_check?(king)
     @next_player.pieces.each do |piece|
       if piece.valid_move?(piece.site, king)
         if piece.instance_of?(Pawn)
@@ -23,6 +24,7 @@ module Regulations
         end
       end
     end
+    false
   end
 
   def resolve_special_cases(piece, to)
@@ -34,6 +36,7 @@ module Regulations
       true if pawn_diagonal(from, to)
       true if double_step(from, to)    
     end
+    piece.special_move = false
   end
 
   def castling(from, to)

@@ -63,21 +63,21 @@ describe ChessGame do
   describe '#straight_clear will return true if there are no obtacles between origin and destination' do
     context 'Rook at [2, 6]' do
       context 'going [6, 6]' do
-        it 'path is clear' do
+        it 'is clear' do
           allow(chess).to receive(:check_adjacent).with([2, 6], :up).and_return(4)
           expect(chess.straight_clear?([2, 6], [6, 6])).to be true
         end
       end
 
       context 'going [2, 0]' do
-        it 'path is clear' do
+        it 'is clear' do
           allow(chess).to receive(:check_adjacent).with([2, 6], :left).and_return(6)
           expect(chess.straight_clear?([2, 6], [2, 0])).to be true
         end
       end
 
       context 'going [6, 7]' do
-        it 'path is not clear' do
+        it 'is not clear' do
           allow(chess).to receive(:check_adjacent).with([2, 6], :up).and_return(4)
           expect(chess.straight_clear?([2, 6], [6, 7])).to be false
         end
@@ -88,28 +88,28 @@ describe ChessGame do
   describe '#diagonal_clear? will return true if there are no obtacles between origin and destination' do
     context 'bishop is at [3, 4]' do
       context 'it moves [6, 7]' do
-        it 'path is clear' do
+        it 'is clear' do
           allow(chess).to receive(:check_adjacent).with([3, 4], :up_right).and_return(3)
           expect(chess.diagonal_clear?([3, 4], [6, 7])).to be true          
         end
       end
 
       context 'it moves [7, 0]' do
-        it 'path is not clear' do
+        it 'is not clear' do
           allow(chess).to receive(:check_adjacent).with([3, 4], :up_left).and_return(3)
           expect(chess.diagonal_clear?([3, 4], [7, 0])).to be false
         end
       end
 
       context 'it moves [1, 2]' do
-        it 'path is clear' do
+        it 'is clear' do
           allow(chess).to receive(:check_adjacent).with([3, 4], :down_left).and_return(2)
           expect(chess.diagonal_clear?([3, 4], [1, 2])).to be true
         end
       end
 
       context 'it moves [1, 6]' do
-        it 'path is not clear' do
+        it 'is not clear' do
           allow(chess).to receive(:check_adjacent).with([3, 4], :down_right).and_return(2)
           expect(chess.diagonal_clear?([3, 4], [0, 7])).to be false
         end
@@ -120,42 +120,42 @@ describe ChessGame do
   describe '#queen_clear? will return true if there are no obtacles between origin and destination' do
     context 'queen is at [5, 3]' do
       context 'it moves [1, 3]' do
-        it 'path is clear' do
+        it 'is clear' do
           allow(chess).to receive(:check_adjacent).with([5, 3], :down).and_return(4)
           expect(chess.queen_clear?([5, 3], [1, 3])).to be true
         end
       end
 
       context 'it moves [3, 3]' do
-        it 'path is clear' do
+        it 'is clear' do
           allow(chess).to receive(:check_adjacent).with([5, 3], :down).and_return(2)
           expect(chess.queen_clear?([5, 3], [3, 3])).to be true
         end
       end
 
       context 'it moves [1, 7]' do
-        it 'path is clear' do
+        it 'is clear' do
           allow(chess).to receive(:check_adjacent).with([5, 3], :down_right).and_return(4)
           expect(chess.queen_clear?([5, 3], [1, 7])).to be true
         end
       end
 
       context 'it moves [5, 0]' do
-        it 'path is clear' do
+        it 'is clear' do
           allow(chess).to receive(:check_adjacent).with([5, 3], :left).and_return(3)
           expect(chess.queen_clear?([5, 3], [5, 0])).to be true
         end
       end
 
       context 'it moves [7, 5]' do
-        it 'path is clear' do
+        it 'is clear' do
           allow(chess).to receive(:check_adjacent).with([5, 3], :up_right).and_return(4)
           expect(chess.queen_clear?([5, 3], [7, 5])).to be false
         end
       end
 
       context 'it moves [4, 4]' do
-        it 'path is clear' do
+        it 'is clear' do
           allow(chess).to receive(:check_adjacent).with([5, 3], :down_right).and_return(1)
           expect(chess.queen_clear?([5, 3], [4, 4])).to be true
         end

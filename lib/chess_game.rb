@@ -38,13 +38,14 @@ class ChessGame
     end
     limbo = @board[square].content
     @board[square].content = EMPTY
-    if check_prevent(@current_player.king_position)
+    if in_check?(@current_player.king_position)
       @board[square].content = limbo
       return puts 'Invalid Move: Your King will be in check'
     end
     limbo.site = to
     capture(@board[to].content)
     @board[to].content = limbo
+    @en_pasant = nil
   end 
 
   def capture(piece)
