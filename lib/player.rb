@@ -11,7 +11,7 @@ class Player
     puts
     puts "Your chess pieces \nand their location on the board:"
     pieces.each do |piece|
-      puts "\e[33m#{piece.mark}\e[0m in rank \e[32m#{piece.position[0]}\e[0m, file \e[32m#{piece.position[1]}\e[0m => \e[32m#{piece.position}\e[0m"
+      puts "\e[33m#{piece.mark}\e[0m in rank \e[32m#{piece.site[0]}\e[0m, file \e[32m#{piece.site[1]}\e[0m => \e[32m#{piece.site}\e[0m"
     end
     puts
   end

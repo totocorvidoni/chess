@@ -32,24 +32,53 @@ class ChessGame
     @next_player = @black_player
   end
 
-  def move(square, to)
-    unless legal?(square, to)
-      return puts 'Invalid Move: Illegal move.'
-    end
-    limbo = @board[square].content
-    @board[square].content = EMPTY
-    if in_check?(@current_player.king_position)
-      @board[square].content = limbo
-      return puts 'Invalid Move: Your King will be in check'
-    end
-    limbo.site = to
-    capture(@board[to].content)
-    @board[to].content = limbo
-    @en_pasant = nil
-  end 
+  def game_loop
+    pick = player_input
+    move(pick[0], pick[1])
+    show
+    switch_player
+  end
 
-  def capture(piece)
-    @next_player.pieces.delete(piece)
+  def player_input
+    choice = []
+    puts 'Select the chess piece you wish to move'
+    # puts 'simply pick the corresponding letter and number'
+    # puts 'for example b4'
+    from = gets.chomp.chars
+    choice << from.map! { |x| x.to_i - 1}
+    puts 'Select where you wish to move it'
+    to = gets.chomp.chars
+    choice << to.map! { |x| x.to_i - 1}
+  end
+
+
+  def setup
+    @board = ChessBoard.new.board
+    0.upto(7) { |x| add(HOME_RANK[x], WHITE, [0, x]) }
+    0.upto(7) { |x| add(Pawn, WHITE, [1, x])}
+    0.upto(7) { |x| add(Pawn, BLACK, [6, x])}
+    0.upto(7) { |x| add(HOME_RANK[x], BLACK, [7, x]) }
+  end
+
+  def show
+    rank_tag = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧']
+    puts
+    puts "\e[32m ① ② ③ ④ ⑤ ⑥ ⑦ ⑧\e[0m"
+    7.downto(0) do |rank|
+      print '|'
+      0.upto(7) do |file|
+        square = @board[[rank, file]]
+        if square.content.respond_to?(:mark)
+          print square.content.mark + '|'
+        else
+          print square.content  + '|'
+        end
+      end
+      print "\e[33m#{rank_tag[rank]}\e[0m"
+      puts
+    end
+    # puts "\e[32m ⓐ ⓑ ⓒ ⓓ ⓔ ⓕ ⓖ ⓗ\e[0m"
+    puts
   end
 
   def add(piece, color, square)
@@ -63,35 +92,35 @@ class ChessGame
     end
   end
 
-  def setup
-    @board = ChessBoard.new.board
-    0.upto(7) { |x| add(HOME_RANK[x], WHITE, [0, x]) }
-    0.upto(7) { |x| add(Pawn, WHITE, [1, x])}
-    0.upto(7) { |x| add(Pawn, BLACK, [6, x])}
-    0.upto(7) { |x| add(HOME_RANK[x], BLACK, [7, x]) }
-  end
-
-  def show
-    puts
-    7.downto(0) do |rank|
-      print '|'
-      0.upto(7) do |file|
-        square = @board[[rank, file]]
-        if square.content.respond_to?(:mark)
-          print square.content.mark + '|'
-        else
-          print square.content  + '|'
-        end
-      end
-      puts
-    end
+  def switch_player
+    @current_player, @next_player = @next_player, @current_player
   end
 
   def my_status
     @current_player.piece_status
   end
 
-  def switch_player
-    @current_player, @next_player = @next_player, @current_player
+  def player_move(from, to)
+    move(@board[from], to)
+  end
+
+  def move(from, to)
+    unless legal?(from, to)
+      return puts 'Invalid Move: illegal move.'
+    end
+    limbo = @board[from].content
+    @board[from].content = EMPTY
+    if in_check?(@current_player.king_position)
+      @board[from].content = limbo
+      return puts 'Invalid Move: Your King will be in check'
+    end
+    limbo.site = to
+    capture(@board[to].content)
+    @board[to].content = limbo
+    @en_pasant = nil
+  end 
+
+  def capture(piece)
+    @next_player.pieces.delete(piece)
   end
 end

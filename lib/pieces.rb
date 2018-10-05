@@ -1,5 +1,5 @@
 class ChessPiece
-  attr_accessor :site, :not_moved
+  attr_accessor :site, :not_moved, :special_move
   attr_reader :mark
 
   def initialize(mark, site)
@@ -41,8 +41,6 @@ class ChessPiece
 end
 
 class King < ChessPiece
-  attr_accessor :special_move
-  
   def valid_move?(to)
     if in_board?(to)
       if castling(to) && @not_moved == true
@@ -114,8 +112,7 @@ class Rook < ChessPiece
 end
 
 class Pawn < ChessPiece
-  attr_accessor :special_move
-  
+
   def valid_move?(to)
     if in_board?(to)
       case @mark
