@@ -126,6 +126,13 @@ describe ChessGame do
         end
       end
 
+      context 'it moves [3, 3]' do
+        it 'path is clear' do
+          allow(chess).to receive(:check_adjacent).with([5, 3], :down).and_return(2)
+          expect(chess.queen_clear?([5, 3], [3, 3])).to be true
+        end
+      end
+
       context 'it moves [1, 7]' do
         it 'path is clear' do
           allow(chess).to receive(:check_adjacent).with([5, 3], :down_right).and_return(4)

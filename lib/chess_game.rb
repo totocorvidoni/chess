@@ -1,8 +1,10 @@
 require_relative 'pieces.rb'
 require_relative 'player.rb'
 require_relative 'chess_board.rb'
+require_relative 'regulations.rb'
 
 class ChessGame
+  include Regulations
   attr_reader :board, :white_player, :black_player
 
   WHITE = {king:   '♚',
@@ -19,8 +21,6 @@ class ChessGame
            rook:   '♖',
            pawn:   '♙'}
 
-  EMPTY = '⛚'
-
   HOME_RANK = [Rook, Knight, Bishop, Queen,
                King, Bishop, Knight, Rook]
 
@@ -29,96 +29,19 @@ class ChessGame
     @black_player = Player.new(black_name)
     setup
     @current_player = @white_player
-  end
-
-  # def legal?(from, to)
-  #   piece = @board[from[0]][from[1]]
-  #   piece.valid_move(from, to)
-  #   @current_player.pieces.any(piece)
-  #   castling
-  #   en_passant
-  #   path_clear?
-  #   check_prevent
-  # end
-
-  def path_clear?(from, to)
-    case @board[from].content
-    when Rook
-      straight_clear?(from, to)
-    when Bishop
-      diagonal_clear(from, to)
-    when Queen
-      queen_clear?(from, to)
-    when King, Knight, Pawn
-      true
-    else
-      false
-    end
-  end
-
-  def straight_clear?(from, to)
-    if from[0] == to[0]
-      distance = to[1] - from[1]
-      if distance < 0 
-        return  true if distance.abs == check_adjacent(from, :left)
-      elsif distance > 0
-        return  true if distance.abs == check_adjacent(from, :right)
-      end
-    elsif from[1] == to[1]
-      distance = to[0] - from[0]
-      if distance < 0
-        return  true if distance.abs == check_adjacent(from, :down)
-      elsif distance > 0
-        return  true if distance.abs == check_adjacent(from, :up)
-      end  
-    end
-    false
-  end
-
-  def diagonal_clear?(from, to)
-    distance = to[1] - from[1]
-    if from[0] < to[0]
-      if from[1] < to[1]
-        return true if distance.abs == check_adjacent(from, :up_right)
-      elsif from[1] > to[1]
-        return true if distance.abs == check_adjacent(from, :up_left)
-      end
-    elsif from[0] > to[0]
-      if from[1] < to[1]
-        return true if distance.abs == check_adjacent(from, :down_right)
-      elsif from[1] > to[1]
-        return true if distance.abs == check_adjacent(from, :down_left)
-      end
-    end
-    false
-  end
-
-  def queen_clear?(from, to)
-    if from[0] == to[0] || from[1] == to[1]
-      straight_clear?(from, to)      
-    else
-      diagonal_clear?(from, to)
-    end
-  end
-
-  def check_adjacent(from, direction, steps= 0)
-    return steps if from.adjacent[direction] == nil
-    steps += 1
-    return steps unless @board[from.adjacent[direction]].content == EMPTY 
-    check_adjacent(@board[from.adjacent[direction]], direction, steps)
+    @next_player = @black_player
   end
 
   def move(from, to)
     @board[from].content = @board[to].content
     @board[from].content = EMPTY
     @board[to].content.site = to
-  end
+  end 
 
   def capture(piece)
     @white_player.pieces.delete(piece)
     @black_player.pieces.delete(piece)
   end
-
 
   def add(piece, color, square)
     mark = piece.to_s.downcase.to_sym
@@ -157,5 +80,9 @@ class ChessGame
 
   def my_status
     @current_player.piece_status
+  end
+
+  def switch_player
+    @current_player, @next_player = @next_player, @current_player
   end
 end

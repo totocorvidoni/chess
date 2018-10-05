@@ -1,5 +1,5 @@
 class ChessPiece
-  attr_accessor :site
+  attr_accessor :site, :not_moved
   attr_reader :mark
 
   def initialize(mark, site)
@@ -41,11 +41,16 @@ class ChessPiece
 end
 
 class King < ChessPiece
+  attr_accessor :special_move
   
   def valid_move?(to)
     if in_board?(to)
-     return true if diagonal_step?(to) || straight_step?(to)
-     return true if castling(to)
+      if castling(to) && @not_moved == true
+        @special_move = true
+        return true
+      end
+      return true if diagonal_step?(to) || straight_step?(to)
+      return true if castling(to)
     end
     false
   end
@@ -109,13 +114,23 @@ class Rook < ChessPiece
 end
 
 class Pawn < ChessPiece
+  attr_accessor :special_move, :double_step
   
   def valid_move?(to)
     if in_board?(to)
       case @mark
       when '♟'
+        if white_double_step?(to)
+          @special_move = true
+          @double_step = true
+          return true
+        end
         return true if white_advance?(to)
       when '♙'
+        if black_double_step?(to)
+          @special_move = true
+          return true
+        end
         return true if black_advance?(to)
       end
     end
@@ -139,6 +154,16 @@ class Pawn < ChessPiece
       true
     else
       false
-    end  
-  end  
+    end
+  end
+
+  def white_double_step?(to)
+    return true if site[0] + 2 == to[0] && not_moved == true
+    false
+  end
+
+  def black_double_step?(to)
+    return true if site[0] - 2 == to[0] && not_moved == true
+    false
+  end
 end
