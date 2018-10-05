@@ -43,23 +43,13 @@ class ChessGame
 
   def path_clear?(from, to)
     case @board[from].content
-    when Pawn
-      pawn_clear?(to)
     when Rook
       straight_clear?(from, to)
-    when Knight
-      knight_clear?(from, to)
     when Bishop
       diagonal_clear(from, to)
-    when Queen, King
-      diagonal_clear?(from, to)
-    when King
-      king_clear?(from, to)
-    end
-  end
-
-  def pawn_clear?(to)
-    if @board[to].content == EMPTY
+    when Queen
+      queen_clear?(from, to)
+    when King, Knight, Pawn
       true
     else
       false
@@ -103,13 +93,21 @@ class ChessGame
     false
   end
 
+  def queen_clear?(from, to)
+    if from[0] == to[0] || from[1] == to[1]
+      straight_clear?(from, to)      
+    else
+      diagonal_clear?(from, to)
+    end
+  end
+
   def check_adjacent(from, direction, steps= 0)
     return steps if from.adjacent[direction] == nil
     steps += 1
     return steps unless @board[from.adjacent[direction]].content == EMPTY 
     check_adjacent(@board[from.adjacent[direction]], direction, steps)
   end
-  
+
   def move(from, to)
     @board[from].content = @board[to].content
     @board[from].content = EMPTY
