@@ -4,19 +4,40 @@ module Regulations
   def legal?(square, to)
     piece = @board[square].content
     from = piece.site
-    piece.valid_move(from, to)
+    piece.valid_move?(from, to)
     @current_player.pieces.any(piece)
-    check_prevent
-    if piece.special_move
-      castling(from, to)
-      pawn_capture(from, to)
-      double_step
+    if piece.special_move == true
+      return true if resolve_special_cases(square, to)
     else
-      path_clear?
+      return true if path_clear?
+    end
+  end
+
+  def check_prevent(king)
+    @next_player.pieces.each do |piece|
+      if piece.valid_move?(piece.site, king)
+        if piece.instance_of?(Pawn)
+          return true if pawn_diagonal(piece.site, king)
+        else
+          return true if path_clear?(piece.site, king)
+        end
+      end
+    end
+  end
+
+  def resolve_special_cases(piece, to)
+    from = piece.site
+    case piece
+    when King
+      true if castling(from, to)
+    when Pawn
+      true if pawn_diagonal(from, to)
+      true if double_step(from, to)    
     end
   end
 
   def castling(from, to)
+    # need to check if king wont be checked in transit
     if from[1] < to[1]
       if straight_clear?(from, to)
         if @board[[from[0], 7]].content.not_moved == true
@@ -42,7 +63,6 @@ module Regulations
       elsif [to[0 + 1], to[1]] == @en_passant || [to[0 - 1], to[1]] == @en_passant
         return true
         # capture(en_passant)
-        # need to create a variable to store the location of the piece vulnerable to en passant
       end
     end
     false

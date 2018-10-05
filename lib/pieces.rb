@@ -114,7 +114,7 @@ class Rook < ChessPiece
 end
 
 class Pawn < ChessPiece
-  attr_accessor :special_move, :double_step
+  attr_accessor :special_move
   
   def valid_move?(to)
     if in_board?(to)

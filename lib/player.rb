@@ -15,4 +15,9 @@ class Player
     end
     puts
   end
+
+  def king_position
+    king = pieces.select { |piece| piece.instance_of?(King) }
+    king[0].site
+  end
 end

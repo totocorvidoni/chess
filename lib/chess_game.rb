@@ -32,15 +32,23 @@ class ChessGame
     @next_player = @black_player
   end
 
-  def move(from, to)
-    @board[from].content = @board[to].content
-    @board[from].content = EMPTY
-    @board[to].content.site = to
+  def move(square, to)
+    unless legal?(square, to)
+      return puts 'Invalid Move: Illegal move.'
+    end
+    limbo = @board[square].content
+    @board[square].content = EMPTY
+    if check_prevent(@current_player.king_position)
+      @board[square].content = limbo
+      return puts 'Invalid Move: Your King will be in check'
+    end
+    limbo.site = to
+    capture(@board[to].content)
+    @board[to].content = limbo
   end 
 
   def capture(piece)
-    @white_player.pieces.delete(piece)
-    @black_player.pieces.delete(piece)
+    @next_player.pieces.delete(piece)
   end
 
   def add(piece, color, square)
