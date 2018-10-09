@@ -143,16 +143,11 @@ module Regulations
   end
 
   def check_adjacent(from, direction, steps= 0)
+    from = @board[from]
     return steps if from.adjacent[direction] == nil
     steps += 1
     return steps unless @board[from.adjacent[direction]].content == EMPTY 
     check_adjacent(@board[from.adjacent[direction]], direction, steps)
-  end
-
-  def valid_pick?(pick)
-    return false unless pick.flatten.all?(0..7)
-    return false unless my_piece?(@board[pick[0]].content)
-    true    
   end
 
   def enemy_piece?(target)

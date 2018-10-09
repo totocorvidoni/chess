@@ -26,6 +26,7 @@ class ChessGame
                King, Bishop, Knight, Rook]
 
   def initialize(white_name, black_name)
+    @turn = 0
     @white_player = Player.new(white_name)
     @black_player = Player.new(black_name)
     setup
@@ -43,6 +44,8 @@ class ChessGame
 
   def game_loop
     begin
+      @turn += 1
+      puts turn_info
       pick = player_input
       until legal?(pick[0], pick[1])
         puts 'Invalid move'
@@ -59,7 +62,7 @@ class ChessGame
 
   def player_input
     choice = []
-    puts 'Select the chess piece you wish to move'
+    puts "#{@current_player.name}, select the chess piece you wish to move"
     # puts 'simply pick the corresponding letter and number'
     # puts 'for example b4'
     from = gets.chomp.chars
@@ -68,8 +71,7 @@ class ChessGame
       puts 'Invalid Piece'
       raise ArgumentError.new
     end
-    puts "You are moving a #{@board[choice[0]].content.mark} at #{convert(from)}"
-    puts 'to...'
+    puts "You are moving a #{@board[choice[0]].content.mark} at #{convert(from)} to..."
     to = gets.chomp.chars
     choice << to.map { |x| x.to_i - 1 }
   end
@@ -124,15 +126,20 @@ class ChessGame
     @current_player, @next_player = @next_player, @current_player
   end
 
-  def my_status
-    @current_player.piece_status
-  end
-
   def capture(piece)
     @next_player.pieces.delete(piece)
   end
 
   def convert(coordinates)
     "[#{coordinates.join('-')}]"
+  end
+
+  def my_status
+    @current_player.piece_status
+  end
+
+  def turn_info
+    color = @current_player == white_player ? 'WHITE' : 'BLACK'
+    "TURN: #{@turn} - #{color}"
   end
 end
