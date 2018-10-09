@@ -75,7 +75,7 @@ module Regulations
   def double_step(from, to)
     if (from[0] - to[0]).abs == 2
       if straight_clear?(from, to)
-        @en_passant = to
+        @en_passant = @board[to]
         return true
       end
     end

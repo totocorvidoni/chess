@@ -5,6 +5,8 @@ class ChessPiece
   def initialize(mark, site)
     @mark = mark
     @site = site
+    @not_moved = true
+    @special_move = false
   end
 
   def general_check(to)
@@ -117,20 +119,10 @@ class Pawn < ChessPiece
 
   def valid_move?(to)
     if general_check(to)
-      @special_move = true unless to[1] == site[1]
       case @mark
       when '♟'
-        if white_double_step?(to)
-          @special_move = true
-          @double_step = true
-          return true
-        end
         return true if white_advance?(to)
       when '♙'
-        if black_double_step?(to)
-          @special_move = true
-          return true
-        end
         return true if black_advance?(to)
       end
     end
@@ -139,8 +131,10 @@ class Pawn < ChessPiece
 
   def white_advance?(to)    
     if site[0] + 1 == to[0] && (-1..1) === site[1] - to[1]
+      @special_move = true unless to[1] == site[1]
       true
-    elsif site[0] + 2 == to[0] && site[1] == to[1]
+    elsif site[0] + 2 == to[0] && site[1] == to[1] && not_moved == true
+      @special_move = true
       true
     else
       false
@@ -149,21 +143,13 @@ class Pawn < ChessPiece
 
   def black_advance?(to)
     if site[0] - 1 == to[0] && (-1..1) === site[1] - to[1]
+      @special_move = true unless to[1] == site[1]
       true
-    elsif site[0] - 2 == to[0] && site[1] == to[1]
+    elsif site[0] - 2 == to[0] && site[1] == to[1] && not_moved == true
+      @special_move = true
       true
     else
       false
     end
-  end
-
-  def white_double_step?(to)
-    return true if site[0] + 2 == to[0] && not_moved == true
-    false
-  end
-
-  def black_double_step?(to)
-    return true if site[0] - 2 == to[0] && not_moved == true
-    false
   end
 end

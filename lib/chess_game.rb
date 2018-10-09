@@ -82,7 +82,7 @@ class ChessGame
       puts 'Invalid Move: Your King will be in check'
       raise ArgumentError.new
     end
-    limbo.site = to
+    limbo.site, limbo.not_moved = to, false
     capture(@board[to].content)
     @board[to].content = limbo
     @en_pasant = nil
