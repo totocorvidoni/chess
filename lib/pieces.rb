@@ -7,8 +7,10 @@ class ChessPiece
     @site = site
   end
 
-  def in_board?(to)
-    to.all?(0..7)
+  def general_check(to)
+    return false unless to.all?(0..7)
+    return false if site == to
+    true
   end
   
   private
@@ -42,7 +44,7 @@ end
 
 class King < ChessPiece
   def valid_move?(to)
-    if in_board?(to)
+    if general_check(to)
       if castling(to) && @not_moved == true
         @special_move = true
         return true
@@ -65,7 +67,7 @@ end
 class Queen < ChessPiece
   
   def valid_move?(to)
-    if in_board?(to)
+    if general_check(to)
       return true if diagonal_move?(to) || straight_move?(to)
     end
     false
@@ -75,7 +77,7 @@ end
 class Bishop < ChessPiece
   
   def valid_move?(to)
-    if in_board?(to)
+    if general_check(to)
       return true if diagonal_move?(to)
     end
     false
@@ -89,7 +91,7 @@ class Knight < ChessPiece
           [1, -2], [-1, -2]]
   
   def valid_move?(to)
-    if in_board?(to)
+    if general_check(to)
       travel = [(site[0] - to[0]), (site[1] - to[1])]
       return true if MOVES.any?(travel)
     end
@@ -104,7 +106,7 @@ end
 class Rook < ChessPiece
   
   def valid_move?(to)
-    if in_board?(to)
+    if general_check(to)
       return true if straight_move?(to)
     end
     false
@@ -114,7 +116,7 @@ end
 class Pawn < ChessPiece
 
   def valid_move?(to)
-    if in_board?(to)
+    if general_check(to)
       @special_move = true unless to[1] == site[1]
       case @mark
       when '♟'

@@ -42,12 +42,12 @@ class ChessGame
   end
 
   def game_loop
-    pick = player_input
-    until legal?(pick[0], pick[1])
-      puts 'Invalid move'
-      pick = player_input
-    end
     begin
+      pick = player_input
+      until legal?(pick[0], pick[1])
+        puts 'Invalid move'
+        pick = player_input
+      end
       move(pick[0], pick[1])
       show
       switch_player
@@ -64,8 +64,12 @@ class ChessGame
     # puts 'for example b4'
     from = gets.chomp.chars
     choice << from.map { |x| x.to_i - 1 }
-    puts "You are moving: #{convert(from)}->#{@board[choice[0]].content.mark}"
-    puts 'Select where you wish to move it'
+    unless my_piece?(@board[choice[0]].content)
+      puts 'Invalid Piece'
+      raise ArgumentError.new
+    end
+    puts "You are moving a #{@board[choice[0]].content.mark} at #{convert(from)}"
+    puts 'to...'
     to = gets.chomp.chars
     choice << to.map { |x| x.to_i - 1 }
   end
