@@ -84,14 +84,15 @@ module Regulations
 
   def path_clear?(from, to)
     case @board[from].content
+    when Pawn
+      pawn_clear?(from, to)
     when Rook
       straight_clear?(from, to)
     when Bishop
-      binding.pry
       diagonal_clear?(from, to)
     when Queen
       queen_clear?(from, to)
-    when King, Knight, Pawn
+    when King, Knight
       true
     else
       false
@@ -133,6 +134,14 @@ module Regulations
       end
     end
     false
+  end
+
+  def pawn_clear?(from, to)
+    if @board[to].content == EMPTY
+      true
+    else
+      false
+    end
   end
 
   def queen_clear?(from, to)
