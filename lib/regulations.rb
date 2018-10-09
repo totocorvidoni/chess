@@ -7,7 +7,7 @@ module Regulations
     return false unless piece.valid_move?(to)
     return false unless @current_player.pieces.any?(piece)
     if piece.special_move == true
-      return true if resolve_special_cases(square, to)
+      return true if resolve_special_cases(piece, to)
     else
       return true if path_clear?(from, to)
     end
@@ -29,18 +29,19 @@ module Regulations
 
   def resolve_special_cases(piece, to)
     from = piece.site
+    piece.special_move = false
     case piece
     when King
-      true if castling(from, to)
+      return true if castling(from, to)
     when Pawn
-      true if pawn_diagonal(from, to)
-      true if double_step(from, to)    
+      return true if pawn_diagonal(from, to)
+      return true if double_step(from, to)    
     end
-    piece.special_move = false
+    false
   end
 
   def castling(from, to)
-    # need to check if king wont be checked in transit
+    # need to check if king won't be checked in transit
     if from[1] < to[1]
       if straight_clear?(from, to)
         if @board[[from[0], 7]].content.not_moved == true
