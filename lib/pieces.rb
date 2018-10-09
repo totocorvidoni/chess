@@ -115,6 +115,7 @@ class Pawn < ChessPiece
 
   def valid_move?(to)
     if in_board?(to)
+      @special_move = true unless to[1] == site[1]
       case @mark
       when '♟'
         if white_double_step?(to)

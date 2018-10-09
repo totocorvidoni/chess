@@ -2,6 +2,7 @@ require_relative 'pieces.rb'
 require_relative 'player.rb'
 require_relative 'chess_board.rb'
 require_relative 'regulations.rb'
+require 'pry'
 
 class ChessGame
   include Regulations
@@ -32,11 +33,28 @@ class ChessGame
     @next_player = @black_player
   end
 
+  def setup
+    @board = ChessBoard.new.board
+    0.upto(7) { |x| add(HOME_RANK[x], WHITE, [0, x]) }
+    0.upto(7) { |x| add(Pawn, WHITE, [1, x])}
+    0.upto(7) { |x| add(Pawn, BLACK, [6, x])}
+    0.upto(7) { |x| add(HOME_RANK[x], BLACK, [7, x]) }
+  end
+
   def game_loop
     pick = player_input
-    move(pick[0], pick[1])
-    show
-    switch_player
+    until legal?(pick[0], pick[1])
+      puts 'Invalid move'
+      pick = player_input
+    end
+    begin
+      move(pick[0], pick[1])
+      show
+      switch_player
+    rescue ArgumentError
+      puts 'Please pick again'
+      game_loop
+    end
   end
 
   def player_input
@@ -45,20 +63,26 @@ class ChessGame
     # puts 'simply pick the corresponding letter and number'
     # puts 'for example b4'
     from = gets.chomp.chars
-    choice << from.map! { |x| x.to_i - 1}
+    choice << from.map { |x| x.to_i - 1 }
+    puts "You are moving: #{convert(from)}->#{@board[choice[0]].content.mark}"
     puts 'Select where you wish to move it'
     to = gets.chomp.chars
-    choice << to.map! { |x| x.to_i - 1}
+    choice << to.map { |x| x.to_i - 1 }
   end
 
-
-  def setup
-    @board = ChessBoard.new.board
-    0.upto(7) { |x| add(HOME_RANK[x], WHITE, [0, x]) }
-    0.upto(7) { |x| add(Pawn, WHITE, [1, x])}
-    0.upto(7) { |x| add(Pawn, BLACK, [6, x])}
-    0.upto(7) { |x| add(HOME_RANK[x], BLACK, [7, x]) }
-  end
+  def move(from, to)
+    limbo = @board[from].content
+    @board[from].content = EMPTY
+    if in_check?(@current_player.king_position)
+      @board[from].content = limbo
+      puts 'Invalid Move: Your King will be in check'
+      raise ArgumentError.new
+    end
+    limbo.site = to
+    capture(@board[to].content)
+    @board[to].content = limbo
+    @en_pasant = nil
+  end 
 
   def show
     rank_tag = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧']
@@ -100,27 +124,11 @@ class ChessGame
     @current_player.piece_status
   end
 
-  def player_move(from, to)
-    move(@board[from], to)
-  end
-
-  def move(from, to)
-    unless legal?(from, to)
-      return puts 'Invalid Move: illegal move.'
-    end
-    limbo = @board[from].content
-    @board[from].content = EMPTY
-    if in_check?(@current_player.king_position)
-      @board[from].content = limbo
-      return puts 'Invalid Move: Your King will be in check'
-    end
-    limbo.site = to
-    capture(@board[to].content)
-    @board[to].content = limbo
-    @en_pasant = nil
-  end 
-
   def capture(piece)
     @next_player.pieces.delete(piece)
+  end
+
+  def convert(coordinates)
+    "[#{coordinates.join('-')}]"
   end
 end

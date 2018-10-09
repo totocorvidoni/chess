@@ -3,6 +3,7 @@ module Regulations
 
   def legal?(square, to)
     piece = @board[square].content
+    return false unless piece.is_a?(ChessPiece)
     from = piece.site
     return false unless piece.valid_move?(to)
     return false unless @current_player.pieces.any?(piece)
@@ -18,7 +19,7 @@ module Regulations
     @next_player.pieces.each do |piece|
       if piece.valid_move?(king)
         if piece.instance_of?(Pawn)
-          return true if pawn_diagonal(piece.site, king)
+          return true if pawn_diagonal?(piece.site, king)
         else
           return true if path_clear?(piece.site, king)
         end
@@ -34,7 +35,7 @@ module Regulations
     when King
       return true if castling(from, to)
     when Pawn
-      return true if pawn_diagonal(from, to)
+      return true if pawn_diagonal?(from, to)
       return true if double_step(from, to)    
     end
     false
@@ -61,7 +62,7 @@ module Regulations
   end
 
   def pawn_diagonal?(from, to)
-    unless from[1] == to[1] 
+    unless from[1] == to[1]
       if enemy_piece?(@board[to].content)
         return true
       elsif [to[0 + 1], to[1]] == @en_passant || [to[0 - 1], to[1]] == @en_passant
@@ -149,8 +150,19 @@ module Regulations
     check_adjacent(@board[from.adjacent[direction]], direction, steps)
   end
 
+  def valid_pick?(pick)
+    return false unless pick.flatten.all?(0..7)
+    return false unless my_piece?(@board[pick[0]].content)
+    true    
+  end
+
   def enemy_piece?(target)
     return true if @next_player.pieces.any?(target)
     false
+  end
+
+  def my_piece?(target)
+    return true if @current_player.pieces.any?(target)
+    false    
   end
 end

@@ -4,7 +4,7 @@ require 'regulations'
 describe 'is the module in charge of checking the legality of moves' do
   subject(:chess) { ChessGame.new('Toto', 'Pupe') }
   it { is_expected.to respond_to(:setup) }
-  
+
   describe '#check_adjacent will return the distance to another piece in the given direction' do
     context 'from pawn to pawn' do
       it 'is 5' do
@@ -135,6 +135,43 @@ describe 'is the module in charge of checking the legality of moves' do
         it 'is clear' do
           allow(chess).to receive(:check_adjacent).with([5, 3], :down_right).and_return(1)
           expect(chess.queen_clear?([5, 3], [4, 4])).to be true
+        end
+      end
+    end
+  end
+
+  describe '#resolve_special_cases will check if a special move is legal' do
+    describe '#pawn_diagonal will only let move the pawn diagonally if there is an enemy piece to capture' do
+      context 'pawn moves diagonally with no piece to capture' do
+        it 'is illegal' do
+          expect(chess.pawn_diagonal?([1, 1], [2, 2])).to be false
+        end
+      end
+
+      context 'pawn moves diagonally with an enemy piece to capture' do
+        it 'is legal' do
+          allow(chess).to receive(:enemy_piece?).with('⛚').and_return(true)
+          expect(chess.pawn_diagonal?([1, 1], [2, 2])).to be true
+        end
+      end
+    end
+
+    describe '#valid_pick? returns true only if player picked a square inside the board and an owned piece' do
+      context 'when pick is [[1, 1], [2, 1]]' do
+        it 'is true' do
+          expect(chess.valid_pick?([[1, 1], [2, 1]])).to be true
+        end
+      end
+
+      context 'when pick is out of board' do
+        it 'is false' do
+          expect(chess.valid_pick?([[8, 0], [7, 0]])).to be false
+        end
+      end
+
+      context 'when pick is an enemy piece' do
+        it 'is false' do
+          expect(chess.valid_pick?([[8, 0], [7, 0]])).to be false
         end
       end
     end
