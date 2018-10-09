@@ -26,7 +26,7 @@ class ChessGame
                King, Bishop, Knight, Rook]
 
   def initialize(white_name, black_name)
-    @turn = 0
+    @turn = 1
     @white_player = Player.new(white_name)
     @black_player = Player.new(black_name)
     setup
@@ -44,7 +44,6 @@ class ChessGame
 
   def game_loop
     begin
-      @turn += 1
       puts turn_info
       pick = player_input
       until legal?(pick[0], pick[1])
@@ -54,6 +53,7 @@ class ChessGame
       move(pick[0], pick[1])
       show
       switch_player
+      @turn += 1
     rescue ArgumentError
       puts 'Please pick again'
       game_loop
@@ -71,7 +71,7 @@ class ChessGame
       puts 'Invalid Piece'
       raise ArgumentError.new
     end
-    puts "You are moving a #{@board[choice[0]].content.mark} at #{convert(from)} to..."
+    print "You are moving a #{@board[choice[0]].content.mark} at #{convert(from)} to... "
     to = gets.chomp.chars
     choice << to.map { |x| x.to_i - 1 }
   end

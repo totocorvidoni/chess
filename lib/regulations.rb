@@ -87,7 +87,8 @@ module Regulations
     when Rook
       straight_clear?(from, to)
     when Bishop
-      diagonal_clear(from, to)
+      binding.pry
+      diagonal_clear?(from, to)
     when Queen
       queen_clear?(from, to)
     when King, Knight, Pawn
@@ -101,16 +102,16 @@ module Regulations
     if from[0] == to[0]
       distance = to[1] - from[1]
       if distance < 0 
-        return true if distance.abs == check_adjacent(from, :left)
+        return true if distance.abs == check_adjacent(from, to, :left)
       elsif distance > 0
-        return true if distance.abs == check_adjacent(from, :right)
+        return true if distance.abs == check_adjacent(from, to, :right)
       end
     elsif from[1] == to[1]
       distance = to[0] - from[0]
       if distance < 0
-        return true if distance.abs == check_adjacent(from, :down)
+        return true if distance.abs == check_adjacent(from, to, :down)
       elsif distance > 0
-        return true if distance.abs == check_adjacent(from, :up)
+        return true if distance.abs == check_adjacent(from, to, :up)
       end  
     end
     false
@@ -120,15 +121,15 @@ module Regulations
     distance = to[1] - from[1]
     if from[0] < to[0]
       if from[1] < to[1]
-        return true if distance.abs == check_adjacent(from, :up_right)
+        return true if distance.abs == check_adjacent(from, to, :up_right)
       elsif from[1] > to[1]
-        return true if distance.abs == check_adjacent(from, :up_left)
+        return true if distance.abs == check_adjacent(from, to, :up_left)
       end
     elsif from[0] > to[0]
       if from[1] < to[1]
-        return true if distance.abs == check_adjacent(from, :down_right)
+        return true if distance.abs == check_adjacent(from, to, :down_right)
       elsif from[1] > to[1]
-        return true if distance.abs == check_adjacent(from, :down_left)
+        return true if distance.abs == check_adjacent(from, to, :down_left)
       end
     end
     false
@@ -142,12 +143,13 @@ module Regulations
     end
   end
 
-  def check_adjacent(from, direction, steps= 0)
+  def check_adjacent(from, to, direction, steps= 0)
     from = @board[from]
-    return steps if from.adjacent[direction] == nil
+    up_next = from.adjacent[direction]
+    return steps if up_next == nil || from.site == to
     steps += 1
-    return steps unless @board[from.adjacent[direction]].content == EMPTY 
-    check_adjacent(@board[from.adjacent[direction]], direction, steps)
+    return steps unless @board[up_next].content == EMPTY
+    check_adjacent(up_next, to, direction, steps)
   end
 
   def enemy_piece?(target)
