@@ -51,9 +51,6 @@ class ChessGame
         pick = player_input
       end
       move(pick[0], pick[1])
-      show
-      switch_player
-      @turn += 1
       wrap_up
     rescue ArgumentError
       puts 'Please pick again'
@@ -97,11 +94,35 @@ class ChessGame
       @en_passant = @to_be_en_passant
       @to_be_en_passant = nil
     end
-    promote_pawn
+    @turn += 1
+    pawn_promotion
+    switch_player
+    show
   end
 
-  def promote_pawn
-    
+  def pawn_promotion
+    unless @promote.nil?
+      puts 'Choose your pawn\'s promotion'
+      color = WHITE.any? { |k, v| v == @promote.content.mark } ? WHITE : BLACK
+      puts "1. #{color[:queen]} - 2. #{color[:knight]} - 3. #{color[:bishop]} - 4. #{color[:rook]}"
+      pick = gets.to_i
+      unless (1..4) === pick
+        puts 'Pick a number between 1 or 4'
+        pick = gets.to_i
+      end
+      case pick
+      when 1
+        add(Queen, color, @promote.site)
+      when 2
+        add(Knight, color, @promote.site)
+      when 3
+        add(Bishop, color, @promote.site)
+      when 4
+        add(Rook, color, @promote.site)
+      end
+      capture(@promote.content)
+      @promote = nil
+    end
   end
 
   def show
@@ -157,3 +178,5 @@ class ChessGame
     "TURN: #{@turn} - #{color}"
   end
 end
+
+

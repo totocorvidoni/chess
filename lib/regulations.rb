@@ -40,6 +40,7 @@ module Regulations
     when King
       return true if castling(from, to)
     when Pawn
+      return true if promotion?(to)
       return true if pawn_diagonal?(from, to)
       return true if double_step(from, to)    
     end
@@ -94,6 +95,12 @@ module Regulations
       end
     end
     false    
+  end
+
+  def promotion?(to)
+    if to[0] == 0 || to[0] == 7
+      @promote = @board[to]
+    end
   end
 
   def path_clear?(from, to)
