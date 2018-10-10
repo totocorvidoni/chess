@@ -87,7 +87,12 @@ class ChessGame
     limbo.site, limbo.not_moved = to, false
     capture(@board[to].content)
     @board[to].content = limbo
-    @en_pasant = nil
+    if @to_be_en_passant.nil?
+      @en_passant = nil
+    else
+      @en_passant = @to_be_en_passant
+      @to_be_en_passant = nil
+    end
   end 
 
   def show

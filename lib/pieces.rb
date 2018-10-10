@@ -133,7 +133,7 @@ class Pawn < ChessPiece
     if site[0] + 1 == to[0] && (-1..1) === site[1] - to[1]
       @special_move = true unless to[1] == site[1]
       true
-    elsif site[0] + 2 == to[0] && site[1] == to[1] && not_moved == true
+    elsif to[0] == 3 && not_moved == true
       @special_move = true
       true
     else
@@ -145,7 +145,7 @@ class Pawn < ChessPiece
     if site[0] - 1 == to[0] && (-1..1) === site[1] - to[1]
       @special_move = true unless to[1] == site[1]
       true
-    elsif site[0] - 2 == to[0] && site[1] == to[1] && not_moved == true
+    elsif to[0] == 4 && site[1] == to[1] && not_moved == true
       @special_move = true
       true
     else

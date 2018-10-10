@@ -64,9 +64,10 @@ module Regulations
     unless from[1] == to[1]
       if enemy_piece?(@board[to].content)
         return true
-      elsif [to[0 + 1], to[1]] == @en_passant || [to[0 - 1], to[1]] == @en_passant
+      elsif [from[0], (from[1] + 1)] == @en_passant || [from[0], (from[1] - 1)] == @en_passant
+        capture(@board[@en_passant].content)
+        @board[@en_passant].content = EMPTY
         return true
-        # capture(en_passant)
       end
     end
     false
@@ -75,7 +76,7 @@ module Regulations
   def double_step(from, to)
     if (from[0] - to[0]).abs == 2
       if straight_clear?(from, to)
-        @en_passant = @board[to]
+        @to_be_en_passant = @board[to].site
         return true
       end
     end

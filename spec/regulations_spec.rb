@@ -156,4 +156,23 @@ describe 'is the module in charge of checking the legality of moves' do
       end
     end
   end
+
+  describe '#pawn_diagonal? it returns true only when the pawn is capturing' do
+    context 'when capturing en passant' do
+      before do
+        chess.move([1, 0], [3, 0])
+        chess.move([3, 0], [4, 0])
+        chess.switch_player
+        chess.legal?([6, 1],[4, 1])
+        chess.move([6, 1], [4, 1])
+        chess.switch_player
+        chess.legal?([4, 0],[5, 1])
+        chess.move([4, 0], [5, 1])
+      end
+
+      it 'is valid' do
+        expect(chess.board[[4, 1]].content).to eq('⛚')
+      end
+    end    
+  end
 end
