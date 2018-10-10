@@ -47,19 +47,18 @@ end
 class King < ChessPiece
   def valid_move?(to)
     if general_check(to)
-      if castling(to) && @not_moved == true
+      if castling(to)
         @special_move = true
         return true
       end
       return true if diagonal_step?(to) || straight_step?(to)
-      return true if castling(to)
     end
     false
   end
 
   def castling(to)
-    if site[0] == to[0]
-      true if site[1] - 2 == to[1] || site[1] + 2 == to[1]
+    if site[0] == to[0] && @not_moved == true
+      true if (site[1] - to[1]).abs == 2 
     else
       false
     end

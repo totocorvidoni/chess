@@ -14,13 +14,19 @@ module Regulations
     false
   end
 
-  def in_check?(king)
+  def in_check?(king_site)
     @next_player.pieces.each do |piece|
-      if piece.valid_move?(king)
+      if piece.valid_move?(king_site)
         if piece.instance_of?(Pawn)
-          return true if pawn_diagonal?(piece.site, king)
+          switch_player # temporary switch to properly check pawn diagonal
+          if pawn_diagonal?(piece.site, king_site)
+            switch_player
+            return true
+          else
+            switch_player
+          end
         else
-          return true if path_clear?(piece.site, king)
+          return true if path_clear?(piece.site, king_site)
         end
       end
     end
@@ -41,18 +47,23 @@ module Regulations
   end
 
   def castling(from, to)
-    # need to check if king won't be checked in transit
     if from[1] < to[1]
       if straight_clear?(from, to)
         if @board[[from[0], 7]].content.not_moved == true
-          # move rook left of king
+          0.upto(2) do |x|
+            return false if in_check?([from[0], [from[1] + x]])
+          end
+          move([from[0], 7], [from[0], 5])
           return true
         end
       end
     elsif from[1] > to[1]
       if straight_clear?(from, [to[0], (to[1] - 1)])
         if @board[[from[0], 0]].content.not_moved == true
-          # move rook right of king
+          0.upto(2) do |x|
+            return false if in_check?([from[0], [from[1] - x]])
+          end
+          move([from[0], 0], [from[0], 3])
           return true
         end
       end
@@ -65,8 +76,10 @@ module Regulations
       if enemy_piece?(@board[to].content)
         return true
       elsif [from[0], (from[1] + 1)] == @en_passant || [from[0], (from[1] - 1)] == @en_passant
-        capture(@board[@en_passant].content)
-        @board[@en_passant].content = EMPTY
+        if @next_player.pieces.any?(@board[@en_passant].content)
+          capture(@board[@en_passant].content)
+          @board[@en_passant].content = EMPTY
+        end
         return true
       end
     end
@@ -163,12 +176,10 @@ module Regulations
   end
 
   def enemy_piece?(target)
-    return true if @next_player.pieces.any?(target)
-    false
+    @next_player.pieces.any?(target) ? true : false
   end
 
   def my_piece?(target)
-    return true if @current_player.pieces.any?(target)
-    false    
+    @current_player.pieces.any?(target) ? true : false
   end
 end

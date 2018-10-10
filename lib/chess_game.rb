@@ -54,6 +54,7 @@ class ChessGame
       show
       switch_player
       @turn += 1
+      wrap_up
     rescue ArgumentError
       puts 'Please pick again'
       game_loop
@@ -87,13 +88,21 @@ class ChessGame
     limbo.site, limbo.not_moved = to, false
     capture(@board[to].content)
     @board[to].content = limbo
+  end
+
+  def wrap_up
     if @to_be_en_passant.nil?
       @en_passant = nil
     else
       @en_passant = @to_be_en_passant
       @to_be_en_passant = nil
     end
-  end 
+    promote_pawn
+  end
+
+  def promote_pawn
+    
+  end
 
   def show
     rank_tag = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧']
