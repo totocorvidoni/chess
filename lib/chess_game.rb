@@ -75,16 +75,19 @@ class ChessGame
   end
 
   def move(from, to)
-    limbo = @board[from].content
+    from_limbo = @board[from].content
+    to_limbo = @board[to].content
     @board[from].content = EMPTY
+    @board[to].content = from_limbo
     if in_check?(@current_player.king_position)
-      @board[from].content = limbo
+      @board[from].content = from_limbo
+      @board[to].content = to_limbo
       puts 'Invalid Move: Your King will be in check'
       raise ArgumentError.new
     end
-    limbo.site, limbo.not_moved = to, false
-    capture(@board[to].content)
-    @board[to].content = limbo
+    @board[to].content.site = to
+    @board[to].content.not_moved = false
+    capture(to_limbo)
   end
 
   def wrap_up
