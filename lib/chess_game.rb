@@ -3,7 +3,6 @@ require_relative 'player.rb'
 require_relative 'chess_board.rb'
 require_relative 'regulations.rb'
 require 'yaml'
-require 'pry'
 
 class ChessGame
   include Regulations
@@ -67,8 +66,6 @@ class ChessGame
   def player_input
     choice = []
     print "#{@current_player.name}, select the chess piece you wish to move: "
-    # puts 'simply pick the corresponding letter and number'
-    # puts 'for example b4'
     from = gets.chomp.chars
     choice << from.map { |x| x.to_i - 1 }
     unless my_piece?(@board[choice[0]].content)
@@ -81,18 +78,19 @@ class ChessGame
   end
 
   def move(from, to)
+    king = @current_player.king_site == from ? to : @current_player.king_site
     from_limbo = @board[from].content
     to_limbo = @board[to].content
     @board[from].content = EMPTY
     @board[to].content = from_limbo
-    if in_check?(@current_player.king_site)
+    if in_check?(king)
       @board[from].content = from_limbo
       @board[to].content = to_limbo
       puts 'Invalid Move: Your King will be in check'
       raise ArgumentError.new
     end
-    @board[to].content.site = to
     @board[to].content.not_moved = false
+    @board[to].content.site = to
     @to_capture = to_limbo
   end
 

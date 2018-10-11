@@ -34,25 +34,26 @@ module Regulations
     false
   end
 
-  def check_mate?
-    @reset = @board
-    @current_player.pieces.each do |piece|
-      0.upto(7) do |y|
-        0.upto(7) do |x|
-          if legal?(piece.site, [y, x])
-            move(piece.site, [y, x])
-            if in_check?(@current_player.king_site)
-              @board = @reset
-            else
-              @board = @reset
-              return false
-            end
-          end
-        end
-      end
-    end
-    true
-  end
+  # still broken
+  # def check_mate?
+  #   File.open('check_mate.yaml', "w") { |file| file.puts YAML.dump(@board) }
+  #   @current_player.pieces.each do |piece|
+  #     0.upto(7) do |y|
+  #       0.upto(7) do |x|
+  #         if legal?(piece.site, [y, x])
+  #           move(piece.site, [y, x])
+  #           if in_check?(@current_player.king_site)
+  #             @board = YAML.load File.read('check_mate.yaml')
+  #           else
+  #             @board = YAML.load File.read('check_mate.yaml')
+  #             return false
+  #           end
+  #         end
+  #       end
+  #     end
+  #   end
+  #   true
+  # end
 
   def resolve_special_cases(piece, to)
     from = piece.site

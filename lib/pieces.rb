@@ -30,15 +30,15 @@ class ChessPiece
 
   def diagonal_step?(to)
     return false unless site[0] + 1 == to[0] || site[0] - 1 == to[0]
-    site[1] + 1 == to[1] || site[1] - 1 == to[1] ? true : false
+    (site[1] - to[1]).abs == 1 ? true : false
   end
 
   def straight_step?(to)
     return false if site == to
     if site[0] == to[0]
-      return true if site[1] + 1 == to[1] || site[1] - 1 == to[1]
+      return true if (site[1] - to[1]).abs == 1
     elsif site[1] == to[1]
-      return true if site[0] + 1 == to[0] || site[1] - 1 == to[1]
+      return true if (site[0] - to[0]).abs == 1
     end
     false
   end
