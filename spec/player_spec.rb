@@ -12,7 +12,7 @@ describe Player do
       before { player.pieces << King.new('king', [0, 4]) }
 
       it 'returns [0, 4]' do
-        expect(player.king_position).to eq([0, 4])      
+        expect(player.king_site).to eq([0, 4])      
       end
     end
   end

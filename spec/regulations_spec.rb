@@ -175,4 +175,20 @@ describe 'is the module in charge of checking the legality of moves' do
       end
     end    
   end
+
+  describe '#check_mate? will return true only if there is not availible move that saves the king' do
+    context 'when knight threatening king' do
+      before do
+        chess.move([0, 6], [2, 5])
+        chess.move([2, 5], [3, 3])
+        chess.move([3, 3], [2, 5])
+        chess.move([2, 5], [4, 5])
+        chess.move([4, 5], [5, 3])
+      end
+
+      it 'is a check mate' do
+        expect(chess.check_mate?).to be true
+      end
+    end
+  end
 end

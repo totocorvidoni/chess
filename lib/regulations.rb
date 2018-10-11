@@ -18,7 +18,7 @@ module Regulations
   def in_check?(king_site)
     @next_player.pieces.each do |piece|
       if piece.valid_move?(king_site)
-        if piece.instance_of?(Pawn)
+        if piece.is_a?(Pawn)
           switch_player # temporary switch to properly check pawn diagonal
           if pawn_diagonal?(piece.site, king_site)
             switch_player
@@ -32,6 +32,26 @@ module Regulations
       end
     end
     false
+  end
+
+  def check_mate?
+    @reset = @board
+    @current_player.pieces.each do |piece|
+      0.upto(7) do |y|
+        0.upto(7) do |x|
+          if legal?(piece.site, [y, x])
+            move(piece.site, [y, x])
+            if in_check?(@current_player.king_site)
+              @board = @reset
+            else
+              @board = @reset
+              return false
+            end
+          end
+        end
+      end
+    end
+    true
   end
 
   def resolve_special_cases(piece, to)

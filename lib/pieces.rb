@@ -98,10 +98,6 @@ class Knight < ChessPiece
     end
     false
   end
-
-  def unobstructed?
-      # should overwrite the parent method only checking for landing site
-  end
 end
 
 class Rook < ChessPiece

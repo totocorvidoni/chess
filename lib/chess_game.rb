@@ -2,6 +2,7 @@ require_relative 'pieces.rb'
 require_relative 'player.rb'
 require_relative 'chess_board.rb'
 require_relative 'regulations.rb'
+require 'yaml'
 require 'pry'
 
 class ChessGame
@@ -43,17 +44,19 @@ class ChessGame
   end
 
   def game_loop
+    # puts 'Check Mate' if check_mate?
+    if in_check?(@current_player.king_site)
+      puts "\e[31m=== Your King is in check ===\e[0m"
+    end    
+    puts turn_info
     begin
-      puts turn_info
-      if in_check?(@current_player.king_position)
-        puts "\e[31m=== Your King is in check ===\e[0m"
-      end
       pick = player_input
       until legal?(pick[0], pick[1])
         puts 'Invalid move'
         pick = player_input
       end
       move(pick[0], pick[1])
+      capture(@to_capture)
       wrap_up
     rescue ArgumentError
       puts 'Please pick again'
@@ -82,7 +85,7 @@ class ChessGame
     to_limbo = @board[to].content
     @board[from].content = EMPTY
     @board[to].content = from_limbo
-    if in_check?(@current_player.king_position)
+    if in_check?(@current_player.king_site)
       @board[from].content = from_limbo
       @board[to].content = to_limbo
       puts 'Invalid Move: Your King will be in check'
@@ -90,7 +93,7 @@ class ChessGame
     end
     @board[to].content.site = to
     @board[to].content.not_moved = false
-    capture(to_limbo)
+    @to_capture = to_limbo
   end
 
   def wrap_up
@@ -103,8 +106,8 @@ class ChessGame
     @turn += 1
     pawn_promotion
     show
-    binding.pry
     switch_player
+    save_game
   end
 
   def pawn_promotion
@@ -170,6 +173,7 @@ class ChessGame
 
   def capture(piece)
     @next_player.pieces.delete(piece)
+    @to_capture = nil
   end
 
   def convert(coordinates)
@@ -184,6 +188,21 @@ class ChessGame
     color = @current_player == white_player ? 'WHITE' : 'BLACK'
     "TURN: #{@turn} - #{color}"
   end
+
+  def save_game
+    puts 'Would your like to save the game and quit?'
+    puts '1. YES'
+    puts '2. NO'
+    save = gets.to_i
+    until (1..2) === save
+      puts 'Invalid option'
+      save = gets.to_i  
+    end
+    if save == 1
+      File.open('save.yaml', "w") do |file|
+        file.puts YAML.dump(self)
+        exit  
+      end
+    end
+  end
 end
-
-
