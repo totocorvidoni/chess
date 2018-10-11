@@ -45,6 +45,9 @@ class ChessGame
   def game_loop
     begin
       puts turn_info
+      if in_check?(@current_player.king_position)
+        puts "\e[31m=== Your King is in check ===\e[0m"
+      end
       pick = player_input
       until legal?(pick[0], pick[1])
         puts 'Invalid move'
@@ -100,9 +103,7 @@ class ChessGame
     @turn += 1
     pawn_promotion
     show
-    if in_check?(@next_player.king_position)
-      puts "\e[32m=== #{@next_player.name}'s King is in check ===\e[0m"
-    end
+    binding.pry
     switch_player
   end
 

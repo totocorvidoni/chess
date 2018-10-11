@@ -3,10 +3,10 @@ module Regulations
 
   def legal?(from, to)
     piece = @board[from].content
-    return false unless piece.is_a?(ChessPiece)
+    # return false unless piece.is_a?(ChessPiece)
+    # return false unless my_piece?(piece)
+    return false if my_piece?(@board[to].content)
     return false unless piece.valid_move?(to)
-    return false unless @current_player.pieces.any?(piece)
-    return false if @current_player.pieces.any?(@board[to].content)
     if piece.special_move
       return true if resolve_special_cases(piece, to)
     else
