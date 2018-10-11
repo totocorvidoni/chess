@@ -60,7 +60,7 @@ class ChessGame
 
   def player_input
     choice = []
-    puts "#{@current_player.name}, select the chess piece you wish to move"
+    print "#{@current_player.name}, select the chess piece you wish to move: "
     # puts 'simply pick the corresponding letter and number'
     # puts 'for example b4'
     from = gets.chomp.chars
@@ -69,7 +69,7 @@ class ChessGame
       puts 'Invalid Piece'
       raise ArgumentError.new
     end
-    print "You are moving a #{@board[choice[0]].content.mark} at #{convert(from)} to... "
+    print "Moving #{@board[choice[0]].content.mark} at #{convert(from)} to... "
     to = gets.chomp.chars
     choice << to.map { |x| x.to_i - 1 }
   end
@@ -99,8 +99,11 @@ class ChessGame
     end
     @turn += 1
     pawn_promotion
-    switch_player
     show
+    if in_check?(@next_player.king_position)
+      puts "\e[32m=== #{@next_player.name}'s King is in check ===\e[0m"
+    end
+    switch_player
   end
 
   def pawn_promotion
