@@ -55,7 +55,6 @@ class ChessGame
         pick = player_input
       end
       move(pick[0], pick[1])
-      capture(@to_capture)
       wrap_up
     rescue ArgumentError
       puts 'Please pick again'
@@ -83,15 +82,16 @@ class ChessGame
     to_limbo = @board[to].content
     @board[from].content = EMPTY
     @board[to].content = from_limbo
+    capture(to_limbo)
     if in_check?(king)
       @board[from].content = from_limbo
       @board[to].content = to_limbo
+      @next_player.pieces << to_limbo
       puts 'Invalid Move: Your King will be in check'
       raise ArgumentError.new
     end
     @board[to].content.not_moved = false
     @board[to].content.site = to
-    @to_capture = to_limbo
   end
 
   def wrap_up
@@ -105,7 +105,7 @@ class ChessGame
     pawn_promotion
     show
     switch_player
-    save_game
+    File.open('save.yaml', "w") { |file| file.puts YAML.dump(self) }
   end
 
   def pawn_promotion
@@ -171,7 +171,6 @@ class ChessGame
 
   def capture(piece)
     @next_player.pieces.delete(piece)
-    @to_capture = nil
   end
 
   def convert(coordinates)
